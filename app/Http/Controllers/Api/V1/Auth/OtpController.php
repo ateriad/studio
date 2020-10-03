@@ -55,15 +55,15 @@ class OtpController extends Controller
         $cellphone = $request->input('cellphone');
 
         $user = User::withTrashed()->whereCellphone($cellphone)->first();
-        if ($user->trashed()) {
-            throw new Exception('this user is deleted, you can not use this cellphone');
-        }
-
         if (empty($user)) {
             $user = new User();
             $user->cellphone = $cellphone;
             $user->cellphone_verified_at = now();
             $user->save();
+        }
+
+        if ($user->trashed()) {
+            throw new Exception('this user is deleted, you can not use this cellphone');
         }
 
         $signInActivity = new SignInActivity();
