@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Otp\Otp;
+use App\Services\Otp\Redis as OtpRedis;
 use App\Services\SMS\Candoo;
 use App\Services\SMS\SMS;
 use Exception;
@@ -22,6 +24,15 @@ class AppServiceProvider extends ServiceProvider
             switch (config('sms.driver')) {
                 case 'candoo':
                     return new Candoo();
+                default:
+                    throw new Exception();
+            }
+        });
+
+        $this->app->singleton(Otp::class, function () {
+            switch (config('otp.driver')) {
+                case 'redis':
+                    return new OtpRedis();
                 default:
                     throw new Exception();
             }
