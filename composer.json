@@ -9,15 +9,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "ext-soap": "*",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "miladrahimi/php-enum": "1.*",
-        "ext-intl": "*",
-        "ext-json": "*",
-        "ext-soap": "*"
+        "miladrahimi/php-jwt": "2.*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",
