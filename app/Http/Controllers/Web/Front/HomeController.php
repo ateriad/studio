@@ -3,18 +3,15 @@
 namespace App\Http\Controllers\Web\Front;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class HomeController extends Controller
 {
     /**
-     * @return Application|Factory|View
+     * @return RedirectResponse
      */
     public function index()
     {
-        return view('pages.front.index');
+       return redirect()->route('admin.dashboard');
     }
 }

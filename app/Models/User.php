@@ -92,11 +92,12 @@ class User extends Authenticatable
     }
 
     /**
+     * @param $value
      * @return string
      */
-    public function getImageAttribute()
+    public function getImageAttribute($value)
     {
-        return isset($this->image) ? public_storage_path($this->image) : asset('admin_assets/images/user.jpg');
+        return isset($value) ? public_storage_path($value) : asset('admin_assets/images/user.jpg');
     }
 
     /**
@@ -104,6 +105,6 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return false;
+        return true;
     }
 }

@@ -39,6 +39,6 @@ class OtpCheck implements Rule
      */
     public function message()
     {
-        return trans('validation.exists', ['attribute' => trans('validation.attributes.otp')]);
+        return trans('validation.exists', ['attribute' => trans('validation.attributes.code')]);
     }
 }
