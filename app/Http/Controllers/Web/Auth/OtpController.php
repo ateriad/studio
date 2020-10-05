@@ -45,14 +45,14 @@ class OtpController extends Controller
         $otp = app(Otp::class);
         $code = $otp->store($cellphone);
 
-        SendSms::dispatch($cellphone, trans('auth.otp-sms', ['otp' => $code]));
-
         if (app()->environment('local')) {
             return new JsonResponse([
                 'message' => $code,
                 'expires_after' => config('otp.targets.sms.ttl'),
             ]);
         }
+
+        SendSms::dispatch($cellphone, trans('auth.otp-sms', ['otp' => $code]));
 
         return new JsonResponse([
             'message' => trans('auth.code_sent'),
@@ -70,7 +70,7 @@ class OtpController extends Controller
     {
         $this->validate($request, [
             'cellphone' => ['required', 'cellphone'],
-            'otp' => ['required', 'numeric', 'digits:6', new OtpCheck()],
+            'code' => ['required', 'numeric', 'digits:6', new OtpCheck()],
         ]);
 
         $cellphone = $request->input('cellphone');
@@ -98,7 +98,7 @@ class OtpController extends Controller
         $signInActivity->save();
 
         return new JsonResponse([
-            'redirect' => route('home'),
+            'redirect' => $user->isAdmin() ? route('admin.dashboard') : route('home'),
         ]);
     }
 }
