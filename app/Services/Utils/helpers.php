@@ -88,3 +88,12 @@ function parseNumber(?string $string): string
 {
     return preg_replace('/[^0-9]/', '', fixNumbers($string));
 }
+
+/**
+ * @param $path
+ * @return string
+ */
+function public_storage_path(?string $path)
+{
+    return asset('storage/' . $path);
+}

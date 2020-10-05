@@ -92,6 +92,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return string
+     */
+    public function getImageAttribute()
+    {
+        return isset($this->image) ? public_storage_path($this->image) : asset('admin_assets/images/user.jpg');
+    }
+
+    /**
      * @return bool
      */
     public function isAdmin()
