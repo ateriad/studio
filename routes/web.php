@@ -2,17 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Route::get('/', [
+    'uses' => 'Front\HomeController@index',
+    'as' => 'home',
+]);
 
-Route::get('/', function () {
-    return view('welcome');
+// Auth
+Route::group(['prefix' => '/auth', 'namespace' => 'Auth'], function () {
+    Route::get('/otp', [
+        'uses' => 'OtpController@show',
+        'as' => 'auth.otp',
+        'middleware' => 'guest',
+    ]);
+    Route::post('/otp/request', [
+        'uses' => 'OtpController@request',
+        'as' => 'auth.otp.request',
+        'middleware' => ['throttle:3,1', 'guest'],
+    ]);
+    Route::post('/otp/submit', [
+        'uses' => 'OtpController@submit',
+        'as' => 'auth.otp.submit',
+        'middleware' => ['throttle:3,1', 'guest'],
+    ]);
 });

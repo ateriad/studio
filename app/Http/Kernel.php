@@ -5,7 +5,6 @@ namespace App\Http;
 use App\Http\Middleware\AdminAuthenticate;
 use App\Http\Middleware\ApiAuthenticate;
 use App\Http\Middleware\Authenticate;
-use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\Json;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -81,8 +80,9 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => Authenticate::class,
-        'auth.basic' => AuthenticateWithBasicAuth::class,
+        'auth.admin' => AdminAuthenticate::class,
         'auth.api' => ApiAuthenticate::class,
+        'auth.basic' => AuthenticateWithBasicAuth::class,
         'cache.headers' => SetCacheHeaders::class,
         'can' => Authorize::class,
         'guest' => RedirectIfAuthenticated::class,

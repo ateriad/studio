@@ -90,4 +90,20 @@ class User extends Authenticatable
     {
         return isset($this->first_name) ? $this->first_name . ' ' . $this->last_name : $this->cellphone;
     }
+
+    /**
+     * @return string
+     */
+    public function getImageAttribute()
+    {
+        return isset($this->image) ? public_storage_path($this->image) : asset('admin_assets/images/user.jpg');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return false;
+    }
 }
