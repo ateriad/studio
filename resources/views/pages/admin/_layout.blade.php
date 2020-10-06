@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ m(asset('admin_assets/css/main.css')) }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/toastr/toastr.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ m(asset('vendor/toastr/custom.toastr.css')) }}">
-    @yield('css')
+    @yield('style')
 </head>
 
 <body class="app">
@@ -53,9 +53,11 @@
     <div class="content">
         <!-- BEGIN: Top Bar -->
         <div class="top-bar">
-        @yield('breadcrumb')
 
-        <!-- BEGIN: Search -->
+            @yield('breadcrumb')
+            <span></span>
+
+            <!-- BEGIN: Search -->
             <div class="intro-x relative mr-3 sm:mr-6">
                 <div class="search hidden sm:block">
                     <input type="text" class="search__input input placeholder-theme-13" placeholder="جستجو...">
@@ -131,14 +133,9 @@
             <!-- END: Account Menu -->
         </div>
         <!-- END: Top Bar -->
-        <div class="intro-y flex items-center mt-8">
-            <h2 class="text-lg font-medium mr-auto">
-                @yield('title')
-            </h2>
-        </div>
-        <div class="grid grid-cols-12 gap-6">
-            @yield('content')
-        </div>
+
+        @yield('content')
+
     </div>
     <!-- END: Content -->
 </div>
