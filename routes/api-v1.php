@@ -10,7 +10,16 @@ Route::group(['prefix' => '/auth'], function () {
 });
 
 Route::group(['middleware' => 'auth.api'], function () {
+    Route::group(['prefix' => '/asset-categories'], function () {
+        Route::get('/', 'AssetCategory\AssetCategoryController@index');
 
+        //assets of a category
+        Route::get('/{category}/assets', 'AssetCategory\AssetController@index');
+    });
+
+    Route::group(['prefix' => '/assets'], function () {
+        Route::get('/', 'Asset\AssetController@index');
+    });
 });
 
 
