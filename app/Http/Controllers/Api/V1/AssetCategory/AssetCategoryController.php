@@ -20,7 +20,9 @@ class AssetCategoryController extends Controller
         ]);
 
         return new JsonResponse(
-            AssetCategory::with(['assets'])->orderByDesc('id')
+            AssetCategory::with(['assets'])
+                ->where('parent_id', '<>' , 0)
+                ->orderByDesc('id')
                 ->paginate($request->input('per_page', 10))
         );
     }
