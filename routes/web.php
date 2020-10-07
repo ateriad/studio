@@ -7,6 +7,8 @@ Route::get('/', [
     'as' => 'home',
 ]);
 
+Route::post('/upload/file', 'uploadController@upload')->name('upload.temp');
+
 // Auth
 Route::group(['prefix' => '/auth', 'namespace' => 'Auth'], function () {
     Route::get('/otp', [
