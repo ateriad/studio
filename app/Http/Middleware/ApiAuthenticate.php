@@ -38,6 +38,6 @@ class ApiAuthenticate extends Middleware
             }
         }
 
-        return new JsonResponse(['error' => 'Unauthorized.'], 401);
+        return new JsonResponse(['message' => 'Unauthorized.'], 401);
     }
 }
