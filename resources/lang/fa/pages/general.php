@@ -32,6 +32,7 @@ return [
     'home' => 'خانه',
     'dashboard' => 'داشبورد',
     'profile' => 'پروفایل',
+    'edit_profile' => 'ویرایش پروفایل',
 
     'assets' => 'محتوا|محتویات',
     'asset_categories' => 'دسته بندی محتوا|دسته بندی های محتوا',

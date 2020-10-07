@@ -7,6 +7,7 @@ Route::get('/', [
     'as' => 'home',
 ]);
 
+//upload temp file
 Route::post('/upload/file', 'uploadController@upload')->name('upload.temp');
 
 // Auth
@@ -25,5 +26,10 @@ Route::group(['prefix' => '/auth', 'namespace' => 'Auth'], function () {
         'uses' => 'OtpController@submit',
         'as' => 'auth.otp.submit',
         'middleware' => ['throttle:3,1', 'guest'],
+    ]);
+
+    Route::get('/sign-out', [
+        'uses' => 'SignOutController@handle',
+        'as' => 'auth.sign-out',
     ]);
 });

@@ -117,11 +117,11 @@
                             <a href="#"
                                class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md">
                                 <i data-feather="user" class="w-4 h-4 mr-2"></i>
-                                {{ trans('pages/general.profile') }}
+                                {{ trans('pages/general.edit_profile') }}
                             </a>
                         </div>
                         <div class="p-2 border-t border-theme-40 dark:border-dark-3">
-                            <a href="#"
+                            <a href="{{ route('auth.sign-out') }}"
                                class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md">
                                 <i data-feather="toggle-right" class="w-4 h-4 mr-2"></i>
                                 {{ trans('pages/general.sign_out') }}
