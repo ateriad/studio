@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Asset[] $assets
+ * @property-read int|null $assets_count
  * @property-read \Illuminate\Database\Eloquent\Collection|AssetCategory[] $children
  * @property-read int|null $children_count
  * @property-read AssetCategory $parent
@@ -52,5 +55,13 @@ class AssetCategory extends Model
     public function children()
     {
         return $this->hasMany(static::class, 'parent_id');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function assets()
+    {
+        return $this->belongsToMany(Asset::class, 'asset_category', 'category_id', 'asset_id');
     }
 }

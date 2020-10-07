@@ -31,6 +31,10 @@ Route::group(['prefix' => '/assets'], function () {
         'uses' => 'AssetController@index',
         'as' => 'assets.index',
     ]);
+    Route::post('/datatable', [
+        'uses' => 'AssetController@datatable',
+        'as' => 'assets.datatable',
+    ]);
     Route::get('/create', [
         'uses' => 'AssetController@create',
         'as' => 'assets.create',
