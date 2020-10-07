@@ -7,6 +7,12 @@ Route::get('/', [
     'as' => 'home',
 ]);
 
+//verify email
+Route::get('/account/email/verify/{token}', [
+    'uses' => 'Account\EmailResetController@verify',
+    'as' => 'account.email.verify',
+]);
+
 //upload temp file
 Route::post('/upload/file', 'uploadController@upload')->name('upload.temp');
 
