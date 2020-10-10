@@ -18,11 +18,13 @@
 `docker-compose up -d`
 
 #### 6. Composer and Migrations
-`docker-compose exec php php artisan key:generate`
-
 `docker-compose exec php composer install`
 
+`docker-compose exec php php artisan key:generate`
+
 `docker-compose exec php php artisan migrate:refresh --seed`
+
+`docker-compose exec php php artisan storage:link`
 
 #### 7. Permissions
 

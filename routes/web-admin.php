@@ -7,6 +7,21 @@ Route::get('/', [
     'as' => 'dashboard',
 ]);
 
+Route::group(['prefix' => '/profile'], function () {
+    Route::get('/edit', [
+        'uses' => 'ProfileController@edit',
+        'as' => 'profile.edit',
+    ]);
+    Route::post('/', [
+        'uses' => 'ProfileController@update',
+        'as' => 'profile.update',
+    ]);
+    Route::post('/image/edit', [
+        'uses' => 'ProfileController@updateImage',
+        'as' => 'profile.image.update',
+    ]);
+});
+
 Route::group(['prefix' => '/asset-categories'], function () {
     Route::get('/', [
         'uses' => 'AssetCategoryController@index',
