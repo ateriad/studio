@@ -128,7 +128,6 @@
 
             $('body').on('click', '.deleteCategory', function () {
                 let id = $(this).attr('data-id');
-                console.log(id)
                 Swal.fire({
                     title: 'آیا دسته حذف شود؟',
                     text: "",

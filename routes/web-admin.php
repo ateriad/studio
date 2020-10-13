@@ -62,4 +62,16 @@ Route::group(['prefix' => '/assets'], function () {
         'uses' => 'AssetController@store',
         'as' => 'assets.store',
     ]);
+    Route::get('/{asset}/edit', [
+        'uses' => 'AssetController@edit',
+        'as' => 'assets.edit',
+    ]);
+    Route::put('/{asset}', [
+        'uses' => 'AssetController@update',
+        'as' => 'assets.update',
+    ]);
+    Route::delete('/{asset}', [
+        'uses' => 'AssetController@destroy',
+        'as' => 'assets.destroy',
+    ]);
 });

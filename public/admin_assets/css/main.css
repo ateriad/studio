@@ -21,7 +21,7 @@
     background-color: #1C3FAA;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
+.table-striped tbody tr:nth-of-type(even) {
     background-color: #e2e8f0;
 }
 
@@ -52,7 +52,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before, table
 
 /*datatable paginate*/
 #datatable_wrapper .dataTables_paginate {
-    margin-top: 15px;
+    margin-top: 28px;
     margin-bottom: 15px;
 }
 

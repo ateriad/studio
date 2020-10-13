@@ -15,6 +15,10 @@
             display: none;
         }
 
+        #datatable_wrapper .dataTables_scrollBody {
+            overflow: unset !important;
+        }
+
         #datatable_wrapper table {
             display: block;
             width: 100% !important;
@@ -27,7 +31,6 @@
         }
 
         #datatable_wrapper #datatable tbody tr {
-            padding: 3px;
             width: 200px;
             margin: 10px;
             text-align: center;
@@ -36,6 +39,10 @@
         #datatable_wrapper #datatable tbody tr td {
             display: block;
             word-break: break-word;
+        }
+
+        table.dataTable.no-footer {
+            border: none;
         }
     </style>
 @endsection
@@ -61,7 +68,7 @@
         </div>
     </div>
 
-    <div class="intro-y p-5 mt-5">
+    <div class="intro-y mt-5">
         <table id="datatable"
                data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
                data-action="{{ route('admin.assets.datatable') }}">
@@ -72,9 +79,37 @@
 @section('js')
     <script src="{{ asset('vendor/datatable/js/datatables.min.js') }}"></script>
     <script>
+        let deleteAssetUrl = '{{ route('admin.assets.destroy', ['asset' => 'assetId']) }}';
+        let editAssetUrl = '{{ route('admin.assets.edit', ['asset' => 'assetId']) }}';
+    </script>
+    <script>
         $(document).ready(function () {
             const Cols = [
                 {
+                    name: "operation",
+                    title: "عملیات",
+                    render: function (data, type, row) {
+                        return '' +
+                            '<div class="absolute w-full flex items-center px-2 pt-2 z-10">\n' +
+                            '   <div class="dropdown relative ml-auto">\n' +
+                            '       <a href="javascript:void(0);" class="dropdown-toggle w-8 h-8 flex items-center justify-center rounded-full" style="background: #bda5a526;">' +
+                            '           <i class="fas fa-ellipsis-v-alt w-4 h-4 text-gray"></i>' +
+                            '       </a>\n' +
+                            '       <div class="dropdown-box mt-8 absolute w-40 top-0 right-0 z-20">\n' +
+                            '            <div class="dropdown-box__content box dark:bg-dark-1 p-2">\n' +
+                            '                 <a href="' + editAssetUrl.replace('assetId', row.id) + '" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md">' +
+                            '                    <i class="fad fa-edit w-4 h-4 mr-2"></i> ویرایش ' +
+                            '                 </a>\n' +
+                            '                 <a href="javascript:void(0);" data-id="' + row.id + '" class="deleteAsset flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md">' +
+                            '                    <i class="fad fa-trash w-4 h-4 mr-2"></i> حذف ' +
+                            '                 </a>\n' +
+                            '           </div>\n' +
+                            '      </div>\n' +
+                            '  </div>\n' +
+                            '</div>';
+                    },
+                    orderable: false,
+                }, {
                     name: "id",
                     title: "شناسه",
                     render: function (data, type, row, meta) {
@@ -148,6 +183,48 @@
                     $(row).addClass('zoom-in box');
                 }
             });
+
+            $('body').on('click', '.deleteAsset', function () {
+                let id = $(this).attr('data-id');
+                Swal.fire({
+                    title: 'آیا محتوا حذف شود؟',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'بله',
+                    cancelButtonText: 'خیر',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: deleteAssetUrl.replace('assetId', id),
+                            success: function (response) {
+                                console.log(response)
+                                successToastr(response['message'])
+                                table.ajax.reload();
+                            },
+                            error: function (error) {
+                                console.log(error)
+
+                                switch (error.status) {
+                                    case 422:
+                                        // validation
+                                        $.each(error['responseJSON']['errors'], function (i, j) {
+                                            errorToastr(j[0])
+                                        })
+                                        break;
+                                    default:
+                                        // 500
+                                        errorToastr(error['responseJSON']['message'])
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                })
+            })
         });
     </script>
 @endsection

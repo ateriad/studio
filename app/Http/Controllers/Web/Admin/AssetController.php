@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\AssetCategory;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -119,5 +120,31 @@ class AssetController extends Controller
         $asset->categories()->attach($request->get('categories'));
 
         return redirect()->route('admin.assets.index')->with('success', trans('assets.created'));
+    }
+
+    /**
+     * @param Asset $asset
+     * @return Factory|View
+     */
+    public function edit(Asset $asset)
+    {
+        $categories = AssetCategory::where('parent_id', '<>', 0)->get();
+
+        return view('pages.admin.assets.edit', [
+            'asset' => $asset,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * @param Asset $asset
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(Asset $asset)
+    {
+        $asset->delete();
+
+        return new JsonResponse(['message' => trans('assets.deleted')]);
     }
 }
