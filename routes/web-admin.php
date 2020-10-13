@@ -39,6 +39,10 @@ Route::group(['prefix' => '/asset-categories'], function () {
         'uses' => 'AssetCategoryController@store',
         'as' => 'asset-categories.store',
     ]);
+    Route::delete('/{category}', [
+        'uses' => 'AssetCategoryController@destroy',
+        'as' => 'asset-categories.destroy',
+    ]);
 });
 
 Route::group(['prefix' => '/assets'], function () {

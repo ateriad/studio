@@ -128,7 +128,6 @@
                 buttons: [],
                 dom: "<'table_info'<l><r><i>><t><p>",
                 pageLength: 25,
-                lengthMenu: [[10, 25, 50, 100, 500], [10, 25, 50, 100, 500]],
                 order: [[0, "desc"]],
                 language: {
                     url: tableElement.data('lang')

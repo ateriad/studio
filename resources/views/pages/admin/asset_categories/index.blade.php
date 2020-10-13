@@ -10,6 +10,7 @@
 @section('side_asset_categories_sub', 'side-menu__sub-open')
 
 @section('style')
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatable/css/datatables.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -33,7 +34,7 @@
         </div>
     </div>
 
-    <div class="intro-y box p-5 mt-5 ">
+    <div class="intro-y mt-5 ">
         <div class="overflow-x-auto scrollbar-hidden">
             <table class="table table-striped hover" style="width:100%" id="datatable"
                    data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
@@ -46,12 +47,15 @@
 @section('js')
     <script src="{{ asset('vendor/datatable/js/datatables.min.js') }}"></script>
     <script>
+        let deleteCategoryUrl = '{{ route('admin.asset-categories.destroy', ['category' => 'categoryId']) }}';
+    </script>
+    <script>
         $(document).ready(function () {
             const Cols = [
                 {
                     name: "id",
                     title: "شناسه",
-                    render: function (data, type, row, meta) {
+                    render: function (data, type, row) {
                         return row.id;
                     },
                     orderable: true,
@@ -59,15 +63,35 @@
                 }, {
                     name: "name",
                     title: "نام",
-                    render: function (data, type, row, meta) {
+                    render: function (data, type, row) {
                         return row.name;
                     },
-                    orderable: false,
+                    orderable: true,
                 }, {
                     name: "parent",
                     title: "والد",
-                    render: function (data, type, row, meta) {
+                    render: function (data, type, row) {
                         return row.parent;
+                    },
+                    orderable: false,
+                }, {
+                    name: "assets_count",
+                    title: "تعداد محتوا",
+                    render: function (data, type, row) {
+                        return row['assets_count'];
+                    },
+                    orderable: true,
+                }, {
+                    name: "operation",
+                    title: "عملیات",
+                    render: function (data, type, row) {
+                        return '' +
+                            '<div class="">' +
+                            '   <a class="text-theme-6 deleteCategory" href="javascript:void(0);" data-id="' + row.id + '">' +
+                            '       <i class="fad fa-trash w-4 h-4 mr-1"></i>' +
+                            'حذف        ' +
+                            '   </a>' +
+                            '</div>';
                     },
                     orderable: false,
                 },
@@ -81,9 +105,8 @@
                 paging: true,
                 scrollX: true,
                 buttons: [],
-                dom: "<'table_info'<l><r><i>><t><p>",
+                dom: "<'table_info'<l><r><i>><'box p-5 pt-3 mt-4't><p>",
                 pageLength: 25,
-                lengthMenu: [[10, 25, 50, 100, 500], [10, 25, 50, 100, 500]],
                 order: [[0, "desc"]],
                 language: {
                     url: tableElement.data('lang')
@@ -101,6 +124,50 @@
                     }
                 },
             });
+
+
+            $('body').on('click', '.deleteCategory', function () {
+                let id = $(this).attr('data-id');
+                console.log(id)
+                Swal.fire({
+                    title: 'آیا دسته حذف شود؟',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'بله',
+                    cancelButtonText: 'خیر',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: deleteCategoryUrl.replace('categoryId', id),
+                            success: function (response) {
+                                console.log(response)
+                                successToastr(response['message'])
+                                table.ajax.reload();
+                            },
+                            error: function (error) {
+                                console.log(error)
+
+                                switch (error.status) {
+                                    case 422:
+                                        // validation
+                                        $.each(error['responseJSON']['errors'], function (i, j) {
+                                            errorToastr(j[0])
+                                        })
+                                        break;
+                                    default:
+                                        // 500
+                                        errorToastr(error['responseJSON']['message'])
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                })
+            })
         });
     </script>
 @endsection
