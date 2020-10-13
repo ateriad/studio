@@ -33,7 +33,7 @@
         <div class="intro-y col-span-12">
             <div class="intro-y box">
                 <div class="p-5">
-                    <form action="{{ route('admin.assets.store') }}" method="post">
+                    <form action="{{ route('admin.assets.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                             <div class="intro-y col-span-12 sm:col-span-6">
@@ -61,6 +61,17 @@
                                     @endforeach
                                 </select>
                                 @error('categories')
+                                <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="intro-y col-span-12">
+                                <label for="thumbnail"
+                                       class="d-block mb-2">{{ trans('validation.attributes.thumbnail') }}</label>
+                                <input type="file"
+                                       class="input w-full border flex-1 @error('thumbnail') border-theme-6 @enderror"
+                                       id="thumbnail" name="thumbnail"
+                                       placeholder="{{ trans('validation.attributes.thumbnail') }}">
+                                @error('thumbnail')
                                 <div class="text-theme-6 mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -108,6 +119,15 @@
             addRemoveLinks: true,
             dictRemoveFile: '✘',
             init: function () {
+                this.on('addedfile', function (file) {
+
+                    let ext = file.name.split('.').pop();
+
+                    if (ext === "blend") {
+                        $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/admin_assets/images/extensions/blend.png");
+                    }
+                });
+
                 this.on("removedfile", function (file) {
                     $('#file').val('');
                 });

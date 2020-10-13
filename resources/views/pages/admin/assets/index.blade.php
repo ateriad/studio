@@ -15,13 +15,7 @@
             display: none;
         }
 
-        #datatable_wrapper .tableInfo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #datatable_wrapper #datatable {
+        #datatable_wrapper table {
             display: block;
             width: 100% !important;
         }
@@ -37,27 +31,12 @@
             width: 200px;
             margin: 10px;
             text-align: center;
-            box-shadow: 0 3px 20px #0000000b;
-            --bg-opacity: 1;
-            background-color: #fff;
-            background-color: rgba(255, 255, 255, var(--bg-opacity));
-            border-radius: 0.375rem;
-            position: relative;
         }
 
         #datatable_wrapper #datatable tbody tr td {
             display: block;
             word-break: break-word;
         }
-
-        div.dataTables_paginate {
-            margin-top: 8px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            padding: 4px 9px;
-        }
-
     </style>
 @endsection
 
@@ -82,7 +61,7 @@
         </div>
     </div>
 
-    <div class="intro-y p-5 mt-5 ">
+    <div class="intro-y p-5 mt-5">
         <table id="datatable"
                data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
                data-action="{{ route('admin.assets.datatable') }}">
@@ -104,17 +83,17 @@
                     orderable: true,
                     visible: false,
                 }, {
-                    name: "name",
-                    title: "نام",
+                    name: "thumbnail",
+                    title: "thumbnail",
                     render: function (data, type, row, meta) {
-                        return '<strong class="border-b border-gray-200 dark:border-dark-5 p-2 d-block">' + row.name + '</strong>';
+                        return '<img alt="asset" class="" src="' + row['thumbnail'] + '">';
                     },
                     orderable: false,
                 }, {
                     name: "path",
                     title: "آدرس",
                     render: function (data, type, row, meta) {
-                        return '<small class="mt-1"><a href="' + row.path + '">' + row.path.substr(row.path.length - 20) + '</a><small>';
+                        return '<small class="mt-1"><a target="_blank" href="' + row.path + '">' + row.path.substr(row.path.length - 20) + '</a><small>';
                     },
                     orderable: false,
                 }, {
@@ -147,7 +126,7 @@
                 paging: true,
                 scrollX: true,
                 buttons: [],
-                dom: "<'tableInfo'<l><r><i>><t><p>",
+                dom: "<'table_info'<l><r><i>><t><p>",
                 pageLength: 25,
                 lengthMenu: [[10, 25, 50, 100, 500], [10, 25, 50, 100, 500]],
                 order: [[0, "desc"]],
@@ -166,6 +145,9 @@
                         return response.data;
                     }
                 },
+                rowCallback: function (row, data) {
+                    $(row).addClass('zoom-in box');
+                }
             });
         });
     </script>

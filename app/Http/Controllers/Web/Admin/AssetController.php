@@ -71,7 +71,8 @@ class AssetController extends Controller
             $obj = new stdClass();
             $obj->id = $asset->id;
             $obj->name = $asset->name;
-            $obj->path = $asset->path;
+            $obj->thumbnail = public_storage_path($asset->thumbnail);
+            $obj->path = public_storage_path($asset->path);
             $obj->categories = $asset->categories->toArray();
             $obj->updated_at = jDate($asset->updated_at);
 
@@ -98,17 +99,19 @@ class AssetController extends Controller
         $request->validate([
             'name' => ['required', 'unique:assets,name',],
             'categories' => ['required', 'array',],
+            'thumbnail' => ['required', 'mimes:jpeg,jpg,png,gif,svg', 'max:1024',],
             'file' => ['required', 'string',],
         ]);
 
         $file = $request->get('file');
 
         $last_id = Asset::latest('id')->first('id')->id ?? 0;
-        $newPath = 'assets/' . ($last_id + 1) . substr($file, 15);
+        $newPath = 'assets/files/' . ($last_id + 1) . substr($file, 15);
         Storage::move($file, $newPath);
 
         $asset = new Asset();
         $asset->name = $request->get('name');
+        $asset->thumbnail = $request->file('thumbnail')->store('assets/thumb/' . ($last_id + 1), 'public');
         $asset->type = pathinfo($file, PATHINFO_EXTENSION);
         $asset->path = $newPath;
         $asset->save();

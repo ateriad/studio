@@ -10,7 +10,6 @@
 @section('side_asset_categories_sub', 'side-menu__sub-open')
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatable/css/datatables.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -35,8 +34,8 @@
     </div>
 
     <div class="intro-y box p-5 mt-5 ">
-        <div class="overflow-y-auto scrollbar-hidden">
-            <table class="table table-striped stripe hover row-border" style="width:100%" id="datatable"
+        <div class="overflow-x-auto scrollbar-hidden">
+            <table class="table table-striped hover" style="width:100%" id="datatable"
                    data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
                    data-action="{{ route('admin.asset-categories.datatable') }}">
             </table>
@@ -82,8 +81,7 @@
                 paging: true,
                 scrollX: true,
                 buttons: [],
-                dom: "<'row'<'col-md-3 col-sm-12'l><'col-md-4 col-sm-12'i><'col-md-5 pull-left'B>r>" +
-                    "<'table-scrollable't><'row'<'col-md-7 col-sm-12'p>>",
+                dom: "<'table_info'<l><r><i>><t><p>",
                 pageLength: 25,
                 lengthMenu: [[10, 25, 50, 100, 500], [10, 25, 50, 100, 500]],
                 order: [[0, "desc"]],

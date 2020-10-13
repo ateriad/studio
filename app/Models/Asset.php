@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @property int $id
  * @property string $name
+ * @property string $thumbnail
  * @property string $type
  * @property string $path
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Asset whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Asset whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Asset wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Asset whereThumbnail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Asset whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Asset whereUpdatedAt($value)
  * @mixin \Eloquent
