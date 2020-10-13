@@ -82,8 +82,11 @@
                                 <div class="text-theme-6 mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit"
-                                    class="button bg-theme-1 text-white mt-2">{{ trans('pages/general.save') }}</button>
+                            <div class="intro-y col-span-12">
+                                <button type="submit" class="button bg-theme-1 text-white mt-2">
+                                    {{ trans('pages/general.save') }}
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>

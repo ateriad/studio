@@ -10,7 +10,42 @@
 @section('side_assets_sub', 'side-menu__sub-open')
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatable/css/datatables.min.css') }}">
+    <style>
+        #datatable_wrapper .dataTables_scrollHead {
+            display: none;
+        }
+
+        #datatable_wrapper .dataTables_scrollBody {
+            overflow: unset !important;
+        }
+
+        #datatable_wrapper table {
+            display: block;
+            width: 100% !important;
+        }
+
+        #datatable_wrapper #datatable tbody {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #datatable_wrapper #datatable tbody tr {
+            width: 200px;
+            margin: 10px;
+            text-align: center;
+            cursor: unset;
+        }
+
+        #datatable_wrapper #datatable tbody tr td {
+            display: block;
+            word-break: break-word;
+        }
+
+        table.dataTable.no-footer {
+            border: none;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -34,22 +69,48 @@
         </div>
     </div>
 
-    <div class="intro-y box p-5 mt-5 ">
-        <div class="overflow-y-auto scrollbar-hidden">
-            <table class="table table-striped stripe hover row-border" style="width:100%" id="datatable"
-                   data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
-                   data-action="{{ route('admin.assets.datatable') }}">
-            </table>
-        </div>
+    <div class="intro-y mt-5">
+        <table id="datatable"
+               data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
+               data-action="{{ route('admin.assets.datatable') }}">
+        </table>
     </div>
 @endsection
 
 @section('js')
     <script src="{{ asset('vendor/datatable/js/datatables.min.js') }}"></script>
     <script>
+        let deleteAssetUrl = '{{ route('admin.assets.destroy', ['asset' => 'assetId']) }}';
+        let editAssetUrl = '{{ route('admin.assets.edit', ['asset' => 'assetId']) }}';
+    </script>
+    <script>
         $(document).ready(function () {
             const Cols = [
                 {
+                    name: "operation",
+                    title: "عملیات",
+                    render: function (data, type, row) {
+                        return '' +
+                            '<div class="absolute w-full flex items-center px-2 pt-2 z-10">\n' +
+                            '   <div class="dropdown relative ml-auto">\n' +
+                            '       <a href="javascript:void(0);" class="dropdown-toggle w-8 h-8 flex items-center justify-center rounded-full" style="background: #bda5a526;">' +
+                            '           <i class="fas fa-ellipsis-v-alt w-4 h-4 text-gray"></i>' +
+                            '       </a>\n' +
+                            '       <div class="dropdown-box mt-8 absolute w-40 top-0 right-0 z-20">\n' +
+                            '            <div class="dropdown-box__content box dark:bg-dark-1 p-2">\n' +
+                            '                 <a href="' + editAssetUrl.replace('assetId', row.id) + '" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md">' +
+                            '                    <i class="fad fa-edit w-4 h-4 mr-2"></i> ویرایش ' +
+                            '                 </a>\n' +
+                            '                 <a href="javascript:void(0);" data-id="' + row.id + '" class="deleteAsset flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md">' +
+                            '                    <i class="fad fa-trash w-4 h-4 mr-2"></i> حذف ' +
+                            '                 </a>\n' +
+                            '           </div>\n' +
+                            '      </div>\n' +
+                            '  </div>\n' +
+                            '</div>';
+                    },
+                    orderable: false,
+                }, {
                     name: "id",
                     title: "شناسه",
                     render: function (data, type, row, meta) {
@@ -58,17 +119,24 @@
                     orderable: true,
                     visible: false,
                 }, {
+                    name: "thumbnail",
+                    title: "thumbnail",
+                    render: function (data, type, row, meta) {
+                        return '<img alt="asset" class="" src="' + row['thumbnail'] + '">';
+                    },
+                    orderable: false,
+                }, {
                     name: "name",
                     title: "نام",
                     render: function (data, type, row, meta) {
-                        return row.name;
+                        return '<h2 class="mt-1 text-lg font-medium">' + row['name'] + '<small>';
                     },
                     orderable: false,
                 }, {
                     name: "path",
                     title: "آدرس",
                     render: function (data, type, row, meta) {
-                        return row.path;
+                        return '<small class="mt-1"><a target="_blank" href="' + row.path + '">' + row.path.substr(row.path.length - 20) + '</a><small>';
                     },
                     orderable: false,
                 }, {
@@ -76,11 +144,16 @@
                     title: "دسته ها",
                     render: function (data, type, row, meta) {
                         let html = '';
+                        html += '<h5 class="mt-2 text-lg font-medium">دسته ها</h5>';
+                        html += '<ul>';
+
                         if (row.categories) {
                             $.each(row.categories, function (i, val) {
                                 html += '<li>' + val['name'] + '</li>'
                             });
                         }
+
+                        html += '</ul>';
 
                         return html
                     },
@@ -96,10 +169,8 @@
                 paging: true,
                 scrollX: true,
                 buttons: [],
-                dom: "<'row'<'col-md-3 col-sm-12'l><'col-md-4 col-sm-12'i><'col-md-5 pull-left'B>r>" +
-                    "<'table-scrollable't><'row'<'col-md-7 col-sm-12'p>>",
+                dom: "<'table_info'<l><r><i>><t><p>",
                 pageLength: 25,
-                lengthMenu: [[10, 25, 50, 100, 500], [10, 25, 50, 100, 500]],
                 order: [[0, "desc"]],
                 language: {
                     url: tableElement.data('lang')
@@ -116,7 +187,52 @@
                         return response.data;
                     }
                 },
+                rowCallback: function (row, data) {
+                    $(row).addClass('zoom-in box');
+                }
             });
+
+            $('body').on('click', '.deleteAsset', function () {
+                let id = $(this).attr('data-id');
+                Swal.fire({
+                    title: 'آیا محتوا حذف شود؟',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'بله',
+                    cancelButtonText: 'خیر',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: deleteAssetUrl.replace('assetId', id),
+                            success: function (response) {
+                                console.log(response)
+                                successToastr(response['message'])
+                                table.ajax.reload();
+                            },
+                            error: function (error) {
+                                console.log(error)
+
+                                switch (error.status) {
+                                    case 422:
+                                        // validation
+                                        $.each(error['responseJSON']['errors'], function (i, j) {
+                                            errorToastr(j[0])
+                                        })
+                                        break;
+                                    default:
+                                        // 500
+                                        errorToastr(error['responseJSON']['message'])
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                })
+            })
         });
     </script>
 @endsection

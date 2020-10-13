@@ -12,9 +12,10 @@
     <meta name="message" content="{{ session('message') }}">
     <meta name="author" content="info@ateriad.ir">
     <link rel="stylesheet" href="{{ asset('admin_assets/css/app.css') }}"/>
-    <link rel="stylesheet" href="{{ m(asset('admin_assets/css/main.css')) }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/toastr/toastr.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ m(asset('vendor/toastr/custom.toastr.css')) }}">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-pro-5.12.0/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ m(asset('admin_assets/css/main.css')) }}"/>
     @yield('style')
 </head>
 
@@ -81,7 +82,7 @@
                         <div class="notification-content__title"> اطلاعیه ها</div>
                         <div class="cursor-pointer relative flex items-center ">
                             <div class="w-12 h-12 flex-none image-fit mr-1">
-                                <img alt="Midone Tailwind HTML Admin Template" class="rounded-full"
+                                <img alt="{{ auth()->user()->name }}"
                                      src="{{ auth()->user()->image }}">
                                 <div
                                     class="w-3 h-3 bg-theme-9 absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
@@ -141,11 +142,17 @@
 </div>
 
 <script src="{{ asset('admin_assets/js/app.js') }}"></script>
-<script src="{{ m(asset('admin_assets/js/main.js')) }}"></script>
 
 <script src="{{ asset('vendor/jquery-3.5.1/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('vendor/toastr/toastr.min.js') }}"></script>
 <script src="{{ m(asset('vendor/toastr/custom.toastr.js')) }}"></script>
+<script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+<script>
+    const generalLang = {!! json_encode(trans('pages/admin/js.general')) !!}
+</script>
+<script src="{{ m(asset('admin_assets/js/main.js')) }}"></script>
+
 @yield('js')
 </body>
 </html>

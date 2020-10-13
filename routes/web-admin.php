@@ -39,6 +39,10 @@ Route::group(['prefix' => '/asset-categories'], function () {
         'uses' => 'AssetCategoryController@store',
         'as' => 'asset-categories.store',
     ]);
+    Route::delete('/{category}', [
+        'uses' => 'AssetCategoryController@destroy',
+        'as' => 'asset-categories.destroy',
+    ]);
 });
 
 Route::group(['prefix' => '/assets'], function () {
@@ -57,5 +61,17 @@ Route::group(['prefix' => '/assets'], function () {
     Route::post('/', [
         'uses' => 'AssetController@store',
         'as' => 'assets.store',
+    ]);
+    Route::get('/{asset}/edit', [
+        'uses' => 'AssetController@edit',
+        'as' => 'assets.edit',
+    ]);
+    Route::put('/{asset}', [
+        'uses' => 'AssetController@update',
+        'as' => 'assets.update',
+    ]);
+    Route::delete('/{asset}', [
+        'uses' => 'AssetController@destroy',
+        'as' => 'assets.destroy',
     ]);
 });

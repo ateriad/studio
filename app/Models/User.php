@@ -49,6 +49,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Query\Builder|User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \App\Models\UserEmailReset|null $userEmailReset
  */
 class User extends Authenticatable
 {

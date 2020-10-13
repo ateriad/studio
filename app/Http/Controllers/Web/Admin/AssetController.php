@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\AssetCategory;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -71,7 +72,8 @@ class AssetController extends Controller
             $obj = new stdClass();
             $obj->id = $asset->id;
             $obj->name = $asset->name;
-            $obj->path = $asset->path;
+            $obj->thumbnail = public_storage_path($asset->thumbnail);
+            $obj->path = public_storage_path($asset->path);
             $obj->categories = $asset->categories->toArray();
             $obj->updated_at = jDate($asset->updated_at);
 
@@ -98,17 +100,19 @@ class AssetController extends Controller
         $request->validate([
             'name' => ['required', 'unique:assets,name',],
             'categories' => ['required', 'array',],
+            'thumbnail' => ['required', 'mimes:jpeg,jpg,png,gif,svg', 'max:1024',],
             'file' => ['required', 'string',],
         ]);
 
         $file = $request->get('file');
 
         $last_id = Asset::latest('id')->first('id')->id ?? 0;
-        $newPath = 'assets/' . ($last_id + 1) . substr($file, 15);
+        $newPath = 'assets/files/' . ($last_id + 1) . substr($file, 15);
         Storage::move($file, $newPath);
 
         $asset = new Asset();
         $asset->name = $request->get('name');
+        $asset->thumbnail = $request->file('thumbnail')->store('assets/thumb/' . ($last_id + 1), 'public');
         $asset->type = pathinfo($file, PATHINFO_EXTENSION);
         $asset->path = $newPath;
         $asset->save();
@@ -116,5 +120,72 @@ class AssetController extends Controller
         $asset->categories()->attach($request->get('categories'));
 
         return redirect()->route('admin.assets.index')->with('success', trans('assets.created'));
+    }
+
+    /**
+     * @param Asset $asset
+     * @return Factory|View
+     */
+    public function edit(Asset $asset)
+    {
+        $categories = AssetCategory::where('parent_id', '<>', 0)->get();
+
+        return view('pages.admin.assets.edit', [
+            'asset' => $asset,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param Asset $asset
+     * @return RedirectResponse
+     */
+    public function update(Request $request, Asset $asset)
+    {
+        $request->validate([
+            'name' => ['required', 'unique:assets,name,' . $asset->id],
+            'categories' => ['required', 'array',],
+            'thumbnail' => ['nullable', 'mimes:jpeg,jpg,png,gif,svg', 'max:1024',],
+            'file' => ['nullable', 'string',],
+        ]);
+
+        $file = $request->get('file');
+
+        $last_id = Asset::latest('id')->first('id')->id ?? 0;
+
+        $path = $asset->path;
+        if ($file) {
+            $path = 'assets/files/' . ($last_id + 1) . substr($file, 15);
+            Storage::move($file, $path);
+        }
+
+
+        $thumbPath = $asset->thumbnail;
+        if ($request->file('thumbnail')) {
+            $thumbPath = $request->file('thumbnail')->store('assets/thumb/' . ($last_id + 1), 'public');
+        }
+
+        $asset->name = $request->get('name');
+        $asset->thumbnail = $thumbPath;
+        $asset->type = pathinfo($file, PATHINFO_EXTENSION);
+        $asset->path = $path;
+        $asset->save();
+
+        $asset->categories()->attach($request->get('categories'));
+
+        return redirect()->route('admin.assets.index')->with('success', trans('assets.updated'));
+    }
+
+    /**
+     * @param Asset $asset
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(Asset $asset)
+    {
+        $asset->delete();
+
+        return new JsonResponse(['message' => trans('assets.deleted')]);
     }
 }

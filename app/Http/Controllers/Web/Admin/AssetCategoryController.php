@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssetCategory;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -29,7 +30,7 @@ class AssetCategoryController extends Controller
      */
     public function datatable(Request $request)
     {
-        $categories = AssetCategory::where('id', '<>', null);
+        $categories = AssetCategory::withCount('assets');
 
         foreach ($request->input('columns') as $column) {
             if ($column['search']['value'] != "") {
@@ -46,6 +47,12 @@ class AssetCategoryController extends Controller
             case 'id':
                 $categories->orderBy('id', $request->input('order.0.dir'));
                 break;
+            case 'name':
+                $categories->orderBy('name', $request->input('order.0.dir'));
+                break;
+            case 'assets_count':
+                $categories->orderBy('assets_count', $request->input('order.0.dir'));
+                break;
         }
 
         $total = $categories->count();
@@ -59,6 +66,7 @@ class AssetCategoryController extends Controller
             $obj->id = $category->id;
             $obj->name = $category->name;
             $obj->parent = $category->parent->name;
+            $obj->assets_count = $category->assets_count;
             $obj->updated_at = jDate($category->updated_at);
 
             $data->add($obj);
@@ -117,5 +125,18 @@ class AssetCategoryController extends Controller
         }
 
         return redirect()->route('admin.asset-categories.index')->with('success', trans('asset_categories.created'));
+    }
+
+    /**
+     * @param AssetCategory $category
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(AssetCategory $category)
+    {
+        $category->assets()->detach();
+        $category->delete();
+
+        return new JsonResponse(['message' => trans('asset_categories.deleted')]);
     }
 }
