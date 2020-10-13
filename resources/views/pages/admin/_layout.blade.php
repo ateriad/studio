@@ -12,9 +12,10 @@
     <meta name="message" content="{{ session('message') }}">
     <meta name="author" content="info@ateriad.ir">
     <link rel="stylesheet" href="{{ asset('admin_assets/css/app.css') }}"/>
-    <link rel="stylesheet" href="{{ m(asset('admin_assets/css/main.css')) }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/toastr/toastr.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ m(asset('vendor/toastr/custom.toastr.css')) }}">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-pro-5.12.0/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ m(asset('admin_assets/css/main.css')) }}"/>
     @yield('style')
 </head>
 
