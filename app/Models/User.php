@@ -84,7 +84,7 @@ class User extends Authenticatable
      */
     public function getImageAttribute($value)
     {
-        return isset($value) ? public_storage_path($value) : asset('admin_assets/images/user.jpg');
+        return isset($value) ? public_storage_path($value) : asset('dashboard_assets/images/user.jpg');
     }
 
     /**

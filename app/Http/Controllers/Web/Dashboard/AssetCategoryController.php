@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Admin;
+namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssetCategory;
@@ -21,7 +21,7 @@ class AssetCategoryController extends Controller
      */
     public function index()
     {
-        return view('pages.admin.asset_categories.index');
+        return view('pages.dashboard.asset_categories.index');
     }
 
     /**
@@ -90,7 +90,7 @@ class AssetCategoryController extends Controller
     {
         $parents = AssetCategory::where('parent_id', 0)->get();
 
-        return view('pages.admin.asset_categories.create', [
+        return view('pages.dashboard.asset_categories.create', [
             'parents' => $parents,
         ]);
     }
@@ -124,7 +124,7 @@ class AssetCategoryController extends Controller
             $category->save();
         }
 
-        return redirect()->route('admin.asset-categories.index')->with('success', trans('asset_categories.created'));
+        return redirect()->route('dashboard.asset-categories.index')->with('success', trans('asset_categories.created'));
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Admin;
+namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
@@ -22,7 +22,7 @@ class AssetController extends Controller
      */
     public function index()
     {
-        return view('pages.admin.assets.index');
+        return view('pages.dashboard.assets.index');
     }
 
     /**
@@ -32,7 +32,7 @@ class AssetController extends Controller
     {
         $categories = AssetCategory::where('parent_id', '<>', 0)->get();
 
-        return view('pages.admin.assets.create', [
+        return view('pages.dashboard.assets.create', [
             'categories' => $categories,
         ]);
     }
@@ -119,7 +119,7 @@ class AssetController extends Controller
 
         $asset->categories()->attach($request->get('categories'));
 
-        return redirect()->route('admin.assets.index')->with('success', trans('assets.created'));
+        return redirect()->route('dashboard.assets.index')->with('success', trans('assets.created'));
     }
 
     /**
@@ -130,7 +130,7 @@ class AssetController extends Controller
     {
         $categories = AssetCategory::where('parent_id', '<>', 0)->get();
 
-        return view('pages.admin.assets.edit', [
+        return view('pages.dashboard.assets.edit', [
             'asset' => $asset,
             'categories' => $categories,
         ]);
@@ -172,9 +172,9 @@ class AssetController extends Controller
         $asset->path = $path;
         $asset->save();
 
-        $asset->categories()->attach($request->get('categories'));
+        $asset->categories()->sync($request->get('categories'));
 
-        return redirect()->route('admin.assets.index')->with('success', trans('assets.updated'));
+        return redirect()->route('dashboard.assets.index')->with('success', trans('assets.updated'));
     }
 
     /**

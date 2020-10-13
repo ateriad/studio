@@ -1,6 +1,6 @@
 <ul>
     <li>
-        <a href="{{ route('admin.dashboard') }}" class="side-menu @yield('side_dashboard')">
+        <a href="{{ route('dashboard.dashboard') }}" class="side-menu @yield('side_dashboard')">
             <div class="side-menu__icon"><i data-feather="home"></i></div>
             <div class="side-menu__title">{{ trans('pages/general.dashboard') }}</div>
         </a>
@@ -15,14 +15,14 @@
         </a>
         <ul class="@yield('side_asset_categories_sub')">
             <li>
-                <a href="{{ route('admin.asset-categories.index') }}"
+                <a href="{{ route('dashboard.asset-categories.index') }}"
                    class="side-menu @yield('side_asset_categories_index')">
                     <div class="side-menu__icon"><i data-feather="activity"></i></div>
                     <div class="side-menu__title">{{ trans('pages/general.list') }}</div>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.asset-categories.create') }}"
+                <a href="{{ route('dashboard.asset-categories.create') }}"
                    class="side-menu @yield('side_asset_categories_create')">
                     <div class="side-menu__icon"><i data-feather="activity"></i></div>
                     <div class="side-menu__title">{{ trans('pages/general.create') }}</div>
@@ -41,14 +41,14 @@
         </a>
         <ul class="@yield('side_assets_sub')">
             <li>
-                <a href="{{ route('admin.assets.index') }}"
+                <a href="{{ route('dashboard.assets.index') }}"
                    class="side-menu @yield('side_assets_index')">
                     <div class="side-menu__icon"><i data-feather="activity"></i></div>
                     <div class="side-menu__title">{{ trans('pages/general.list') }}</div>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.assets.create') }}"
+                <a href="{{ route('dashboard.assets.create') }}"
                    class="side-menu @yield('side_assets_create')">
                     <div class="side-menu__icon"><i data-feather="activity"></i></div>
                     <div class="side-menu__title">{{ trans('pages/general.create') }}</div>

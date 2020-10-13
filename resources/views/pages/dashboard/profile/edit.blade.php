@@ -1,4 +1,4 @@
-@extends('pages.admin._layout')
+@extends('pages.dashboard._layout')
 
 @section('title', trans('pages/general.edit_profile'))
 @section('mobile_dashboard', 'menu--active')
@@ -9,7 +9,7 @@
 
 @section('breadcrumb')
     <div class="-intro-x breadcrumb mr-auto hidden sm:flex">
-        <a href="{{ route('admin.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
+        <a href="{{ route('dashboard.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
         <i data-feather="chevron-right" class="breadcrumb__icon"></i>
         <a href="#" class="breadcrumb--active">{{ trans('pages/general.edit_profile') }}</a>
     </div>
@@ -45,7 +45,7 @@
                     <div class="grid grid-cols-12 gap-5">
                         <div class="col-span-12 xl:col-span-4">
                             <form method="post"
-                                  action="{{ route('admin.profile.image.update') }}"
+                                  action="{{ route('dashboard.profile.image.update') }}"
                                   enctype="multipart/form-data">
                                 @csrf
                                 <div class="border border-gray-200 dark:border-dark-5 rounded-md p-5">
@@ -65,7 +65,7 @@
 
                         </div>
                         <div class="col-span-12 xl:col-span-8">
-                            <form method="post" action="{{ route('admin.profile.update') }}">
+                            <form method="post" action="{{ route('dashboard.profile.update') }}">
                                 @csrf
                                 <div>
                                     <label for="first_name">{{ trans('validation.attributes.first_name') }}</label>
@@ -98,7 +98,7 @@
                                                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                             </svg>
 
-                                            {{ trans('pages/admin/profile.confirm_your_email') }}
+                                            {{ trans('pages/dashboard/profile.confirm_your_email') }}
                                             <a target="_blank"
                                                href="{{ str_replace('@', 'http://',strrchr($tempEmail->email, '@')) }}">
                                                 ({{ $tempEmail->email }})

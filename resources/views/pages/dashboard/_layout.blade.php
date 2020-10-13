@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link href="{{ asset('admin_assets/images/logo.svg') }}" rel="shortcut icon">
+    <link href="{{ asset('dashboard_assets/images/logo.svg') }}" rel="shortcut icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@lang('pages/general.app_name') | @yield('title')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -11,11 +11,11 @@
     <meta name="error" content="{{ session('error') }}">
     <meta name="message" content="{{ session('message') }}">
     <meta name="author" content="info@ateriad.ir">
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/app.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('dashboard_assets/css/app.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/toastr/toastr.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ m(asset('vendor/toastr/custom.toastr.css')) }}">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-pro-5.12.0/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ m(asset('admin_assets/css/main.css')) }}"/>
+    <link rel="stylesheet" href="{{ m(asset('dashboard_assets/css/main.css')) }}"/>
     @yield('style')
 </head>
 
@@ -25,14 +25,14 @@
     <div class="mobile-menu-bar">
         <a href="#" class="flex mr-auto">
             <img alt="Midone Tailwind HTML Admin Template" class="w-6"
-                 src="{{ asset('admin_assets/images/logo.svg') }}">
+                 src="{{ asset('dashboard_assets/images/logo.svg') }}">
         </a>
         <a href="javascript:void(0)" id="mobile-menu-toggler">
             <i data-feather="bar-chart-2"
                class="w-8 h-8 text-white transform -rotate-90"></i>
         </a>
     </div>
-    @include('pages.admin._mobile_menu')
+    @include('pages.dashboard._mobile_menu')
 </div>
 <!-- END: Mobile Menu -->
 <div class="flex">
@@ -40,13 +40,13 @@
     <nav class="side-nav">
         <a href="#" class="intro-x flex items-center pl-5 pt-4">
             <img alt="Midone Tailwind HTML Admin Template" class="w-6"
-                 src="{{ asset('admin_assets/images/logo.svg') }}">
+                 src="{{ asset('dashboard_assets/images/logo.svg') }}">
             <span class="hidden xl:block text-white text-lg ml-3">
                 {{ trans('pages/general.app_name') }}
             </span>
         </a>
         <div class="side-nav__devider my-6"></div>
-        @include('pages.admin._side_menu')
+        @include('pages.dashboard._side_menu')
     </nav>
     <!-- END: Side Menu -->
 
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                         <div class="p-2">
-                            <a href="{{ route('admin.profile.edit') }}"
+                            <a href="{{ route('dashboard.profile.edit') }}"
                                class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md">
                                 <i data-feather="user" class="w-4 h-4 mr-2"></i>
                                 {{ trans('pages/general.edit_profile') }}
@@ -141,7 +141,7 @@
     <!-- END: Content -->
 </div>
 
-<script src="{{ asset('admin_assets/js/app.js') }}"></script>
+<script src="{{ asset('dashboard_assets/js/app.js') }}"></script>
 
 <script src="{{ asset('vendor/jquery-3.5.1/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('vendor/toastr/toastr.min.js') }}"></script>
@@ -149,9 +149,9 @@
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
 <script>
-    const generalLang = {!! json_encode(trans('pages/admin/js.general')) !!}
+    const generalLang = {!! json_encode(trans('pages/dashboard/js.general')) !!}
 </script>
-<script src="{{ m(asset('admin_assets/js/main.js')) }}"></script>
+<script src="{{ m(asset('dashboard_assets/js/main.js')) }}"></script>
 
 @yield('js')
 </body>
