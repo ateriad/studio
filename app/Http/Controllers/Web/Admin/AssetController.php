@@ -137,6 +137,47 @@ class AssetController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param Asset $asset
+     * @return RedirectResponse
+     */
+    public function update(Request $request, Asset $asset)
+    {
+        $request->validate([
+            'name' => ['required', 'unique:assets,name,' . $asset->id],
+            'categories' => ['required', 'array',],
+            'thumbnail' => ['nullable', 'mimes:jpeg,jpg,png,gif,svg', 'max:1024',],
+            'file' => ['nullable', 'string',],
+        ]);
+
+        $file = $request->get('file');
+
+        $last_id = Asset::latest('id')->first('id')->id ?? 0;
+
+        $path = $asset->path;
+        if ($file) {
+            $path = 'assets/files/' . ($last_id + 1) . substr($file, 15);
+            Storage::move($file, $path);
+        }
+
+
+        $thumbPath = $asset->thumbnail;
+        if ($request->file('thumbnail')) {
+            $thumbPath = $request->file('thumbnail')->store('assets/thumb/' . ($last_id + 1), 'public');
+        }
+
+        $asset->name = $request->get('name');
+        $asset->thumbnail = $thumbPath;
+        $asset->type = pathinfo($file, PATHINFO_EXTENSION);
+        $asset->path = $path;
+        $asset->save();
+
+        $asset->categories()->attach($request->get('categories'));
+
+        return redirect()->route('admin.assets.index')->with('success', trans('assets.updated'));
+    }
+
+    /**
      * @param Asset $asset
      * @return JsonResponse
      * @throws Exception

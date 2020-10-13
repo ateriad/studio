@@ -3,10 +3,10 @@
 @section('title', trans('pages/admin/assets.assets_create'))
 
 @section('mobile_assets', 'menu--active')
-@section('mobile_assets_create', 'menu--active')
+@section('mobile_assets_index', 'menu--active')
 @section('mobile_assets_sub', 'menu__sub-open')
 @section('side_assets', 'side-menu--active')
-@section('side_assets_create', 'side-menu--active')
+@section('side_assets_index', 'side-menu--active')
 @section('side_assets_sub', 'side-menu__sub-open')
 
 @section('style')
@@ -25,7 +25,7 @@
 @section('content')
     <div class="intro-y flex items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            {{ trans('pages/admin/assets.assets_create') }}
+            {{ $asset->name }}
         </h2>
     </div>
 
@@ -33,14 +33,16 @@
         <div class="intro-y col-span-12">
             <div class="intro-y box">
                 <div class="p-5">
-                    <form action="{{ route('admin.assets.store') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('admin.assets.update', ['asset' => $asset->id]) }}" method="post"
+                          enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
                         <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <label for="name" class="d-block mb-2">{{ trans('validation.attributes.name') }}</label>
                                 <input type="text"
                                        class="input w-full border flex-1 @error('name') border-theme-6 @enderror"
-                                       id="name" name="name" value="{{ old('name') }}"
+                                       id="name" name="name" value="{{ $asset->name }}"
                                        placeholder="{{ trans('validation.attributes.name') }}">
                                 @error('name')
                                 <div class="text-theme-6 mt-2">{{ $message }}</div>
@@ -55,7 +57,7 @@
                                     id="categories" name="categories[]" multiple>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}"
-                                            {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
+                                            {{ in_array($category->id, $asset->categories()->pluck('category_id')->toArray()) ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
@@ -67,10 +69,13 @@
                             <div class="intro-y col-span-12">
                                 <label for="thumbnail"
                                        class="d-block mb-2">{{ trans('validation.attributes.thumbnail') }}</label>
-                                <input type="file"
-                                       class="input w-full border flex-1 @error('thumbnail') border-theme-6 @enderror"
-                                       id="thumbnail" name="thumbnail"
-                                       placeholder="{{ trans('validation.attributes.thumbnail') }}">
+                                <label
+                                    class="input w-full border d-block overflow-hidden @error('thumbnail') border-theme-6 @enderror">
+                                    <span>{{ $asset->thumbnail ?? trans('pages/general.select_a_file') }}</span>
+                                    <input type="file" class="custom-file-input" accept="image/*"
+                                           id="thumbnail" name="thumbnail" value="{{ old('thumbnail') }}"
+                                           hidden>
+                                </label>
                                 @error('thumbnail')
                                 <div class="text-theme-6 mt-2">{{ $message }}</div>
                                 @enderror
@@ -108,6 +113,9 @@
 @section('js')
     <script type="text/javascript" src="{{ asset('vendor/dropzone-5.7.0/min/dropzone.min.js') }}"></script>
     <script>
+        let images = [@json($asset->path_url)];
+    </script>
+    <script>
         let file = '';
         let myDropzone = new Dropzone("#dropzone", {
             url: $('#dropzone').data('action'),
@@ -123,6 +131,9 @@
             dictRemoveFile: '✘',
             init: function () {
                 this.on('addedfile', function (file) {
+                    if (this.files[1] != null) {
+                        this.removeFile(this.files[0]);
+                    }
 
                     let ext = file.name.split('.').pop();
 
@@ -144,6 +155,23 @@
                     this.addFile(file);
                 });
             }
+        });
+
+        let mockFile = [];
+
+        $.each(images, function (i, image) {
+            mockFile[i] = {name: image, size: 12345};
+            let ext = image.split('.').pop();
+
+            myDropzone.options.addedfile.call(myDropzone, mockFile[i]);
+            myDropzone.files.push(mockFile[i]);
+
+            if (ext === 'blend') {
+                myDropzone.options.thumbnail.call(myDropzone, mockFile[i], window.location.origin + "/admin_assets/images/extensions/blend.png");
+            } else {
+                myDropzone.options.thumbnail.call(myDropzone, mockFile[i], image);
+            }
+            myDropzone.emit("complete", mockFile[i]);
         });
     </script>
 @endsection

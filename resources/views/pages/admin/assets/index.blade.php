@@ -34,6 +34,7 @@
             width: 200px;
             margin: 10px;
             text-align: center;
+            cursor: unset;
         }
 
         #datatable_wrapper #datatable tbody tr td {
@@ -122,6 +123,13 @@
                     title: "thumbnail",
                     render: function (data, type, row, meta) {
                         return '<img alt="asset" class="" src="' + row['thumbnail'] + '">';
+                    },
+                    orderable: false,
+                }, {
+                    name: "name",
+                    title: "نام",
+                    render: function (data, type, row, meta) {
+                        return '<h2 class="mt-1 text-lg font-medium">' + row['name'] + '<small>';
                     },
                     orderable: false,
                 }, {

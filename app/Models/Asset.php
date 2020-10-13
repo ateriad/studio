@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AssetCategory[] $categories
  * @property-read int|null $categories_count
+ * @property-read string $thumbnail_url
  * @method static \Illuminate\Database\Eloquent\Builder|Asset newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Asset newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Asset query()
@@ -33,6 +34,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Asset extends Model
 {
     use HasFactory;
+
+    public $appends = [
+        'thumbnail_url',
+        'path_url',
+    ];
+
+    /**
+     * @return string
+     */
+    public function getThumbnailUrlAttribute()
+    {
+        return isset($this->thumbnail) ? public_storage_path($this->thumbnail) : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathUrlAttribute()
+    {
+        return isset($this->path) ? public_storage_path($this->path) : '';
+    }
 
     /**
      * @return BelongsToMany
