@@ -142,11 +142,14 @@
 </div>
 
 <script src="{{ asset('admin_assets/js/app.js') }}"></script>
-<script src="{{ m(asset('admin_assets/js/main.js')) }}"></script>
 
 <script src="{{ asset('vendor/jquery-3.5.1/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('vendor/toastr/toastr.min.js') }}"></script>
 <script src="{{ m(asset('vendor/toastr/custom.toastr.js')) }}"></script>
+<script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+<script src="{{ m(asset('admin_assets/js/main.js')) }}"></script>
+
 @yield('js')
 </body>
 </html>
