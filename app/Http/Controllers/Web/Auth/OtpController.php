@@ -98,7 +98,7 @@ class OtpController extends Controller
         $signInActivity->save();
 
         return new JsonResponse([
-            'redirect' => $user->isAdmin() ? route('admin.dashboard') : route('home'),
+            'redirect' => route('dashboard.index'),
         ]);
     }
 }

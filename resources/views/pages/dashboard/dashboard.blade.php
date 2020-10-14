@@ -10,7 +10,7 @@
 @section('breadcrumb')
     <div class="grid grid-cols-12 gap-6">
         <div class="-intro-x breadcrumb mr-auto hidden sm:flex">
-            <a href="{{ route('dashboard.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
+            <a href="{{ route('dashboard.index') }}" class="">{{ trans('pages/general.home') }}</a>
             <i data-feather="chevron-right" class="breadcrumb__icon"></i>
             <a href="#" class="breadcrumb--active">{{ trans('pages/general.dashboard') }}</a>
         </div>
