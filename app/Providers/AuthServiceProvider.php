@@ -26,13 +26,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::before(function (User $user, $permission, array $models = null) {
+        Gate::before(function (User $user, $permissions, array $models = []) {
             if ($user->isSuperAdmin()) {
                 return true;
             }
 
-            if ($models === null) {
-                return $user->hasPermission($permission);
+            if ($models === []) {
+                return $user->hasPermission($permissions);
             }
 
             return null;

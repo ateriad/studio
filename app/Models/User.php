@@ -117,14 +117,16 @@ class User extends Authenticatable
     }
 
     /**
-     * @param string $permission
+     * @param string $permissions
      * @return bool
      */
-    public function hasPermission(string $permission): bool
+    public function hasPermission(string $permissions): bool
     {
+        $permissions = explode('|', $permissions);
+
         foreach ($this->roles as $role) {
             foreach ($role->permissions() as $p) {
-                if ($p == $permission) {
+                if (in_array($p, $permissions)) {
                     return true;
                 }
             }
