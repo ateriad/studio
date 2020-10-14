@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,6 +52,8 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  * @mixin \Eloquent
  * @property-read \App\Models\UserEmailReset|null $userEmailReset
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read int|null $roles_count
  */
 class User extends Authenticatable
 {
@@ -70,6 +74,8 @@ class User extends Authenticatable
         'cellphone_verified_at' => 'datetime',
     ];
 
+    public $appends = ['full_name'];
+
     /**
      * @return string
      */
@@ -88,11 +94,55 @@ class User extends Authenticatable
     }
 
     /**
+     * @return BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * @param int $roleId
      * @return bool
      */
-    public function isAdmin()
+    public function hasRole(int $roleId): bool
     {
-        return in_array($this->id, [1, 2, 3]);
+        foreach ($this->roles as $role) {
+            if ($role->id == $roleId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $permission
+     * @return bool
+     */
+    public function hasPermission(string $permission): bool
+    {
+        foreach ($this->roles as $role) {
+            foreach ($role->permissions() as $p) {
+                if ($p == $permission) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->roles()->count() > 0;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        $this->load('roles');
+
+        return $this->roles()->where('title', 'super_admin')->exists();
     }
 
     /**
