@@ -127,7 +127,7 @@
                     let ext = file.name.split('.').pop();
 
                     if (ext === "blend") {
-                        $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/admin_assets/images/extensions/blend.png");
+                        $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/blend.png");
                     }
                 });
 
