@@ -18,7 +18,7 @@ class CreateAssetCategoriesTable extends Migration
             $table->foreignId('parent_id')->default(0)->index();
             $table->string('name');
             $table->string('image')->nullable();
-            $table->json('info');
+            $table->text('info');
             $table->timestamps();
         });
     }
