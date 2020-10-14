@@ -76,6 +76,7 @@ class AssetCategoryController extends Controller
 
             $obj = new stdClass();
             $obj->id = $category->id;
+            $obj->image_url = $category->image_url;
             $obj->name = $category->name;
             $obj->parent = $category->parent->name;
             $obj->assets_count = $category->assets_count;

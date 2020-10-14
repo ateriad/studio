@@ -61,6 +61,16 @@
                     orderable: true,
                     visible: false,
                 }, {
+                    name: "image",
+                    title: "",
+                    render: function (data, type, row) {
+                        return '' +
+                            '<div class="w-10 h-10 flex-none image-fit rounded-md overflow-hidden">\n' +
+                            '   <img alt="'+ row['name'] +'" src="'+ row['image_url'] +'">\n' +
+                            '</div>';
+                    },
+                    orderable: false,
+                }, {
                     name: "name",
                     title: "نام",
                     render: function (data, type, row) {

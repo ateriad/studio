@@ -36,6 +36,8 @@ class Asset extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
     public $appends = [
         'thumbnail_url',
         'path_url',

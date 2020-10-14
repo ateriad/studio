@@ -15,13 +15,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $parent_id
  * @property string $name
  * @property string|null $image
- * @property string|null $info
+ * @property string $info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Asset[] $assets
  * @property-read int|null $assets_count
  * @property-read \Illuminate\Database\Eloquent\Collection|AssetCategory[] $children
  * @property-read int|null $children_count
+ * @property-read string $image_url
  * @property-read AssetCategory $parent
  * @method static \Illuminate\Database\Eloquent\Builder|AssetCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AssetCategory newQuery()
@@ -38,6 +39,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class AssetCategory extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public $appends = [
+        'image_url',
+    ];
+
+    /**
+     * @return string
+     */
+    public function getImageUrlAttribute()
+    {
+        return isset($this->image) ? public_storage_path($this->image) : '';
+    }
 
     /**
      * @return BelongsTo
