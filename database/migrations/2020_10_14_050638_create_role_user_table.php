@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAssetCategoriesTable extends Migration
+class CreateRoleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateAssetCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('asset_categories', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->default(0)->index();
-            $table->string('name');
-            $table->string('image')->nullable();
-            $table->json('info');
+            $table->foreignId('role_id')->index();
+            $table->foreignId('user_id')->index();
             $table->timestamps();
+
+            $table->index(['role_id', 'user_id']);
         });
     }
 
@@ -30,6 +30,6 @@ class CreateAssetCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asset_categories');
+        Schema::dropIfExists('role_user');
     }
 }

@@ -7,12 +7,12 @@
         <div class="hidden xl:flex flex-col min-h-screen">
             <a href="#" class="-intro-x flex items-center pt-5">
                 <img alt="Midone Tailwind HTML Admin Template" class="w-6"
-                     src="{{ asset('admin_assets/images/logo.svg') }}">
+                     src="{{ asset('dashboard_assets/images/logo.svg') }}">
                 <span class="text-white text-lg ml-3">{{ trans('pages/general.app_name') }}</span>
             </a>
             <div class="my-auto">
                 <img alt="Midone Tailwind HTML Admin Template" class="-intro-x w-1/2 -mt-16"
-                     src="{{ asset('admin_assets/images/illustration.svg') }}">
+                     src="{{ asset('dashboard_assets/images/illustration.svg') }}">
                 <div class="-intro-x text-white font-medium text-4xl leading-tight mt-10">
                     تنها چند کلیک
                     <br>
@@ -86,5 +86,5 @@
         let requestUrl = '{{ route('auth.otp.request') }}';
         let submitUrl = '{{ route('auth.otp.submit') }}';
     </script>
-    <script src="{{ m(asset('admin_assets/js/pages/auth/otp.js')) }}"></script>
+    <script src="{{ m(asset('dashboard_assets/js/pages/auth/otp.js')) }}"></script>
 @endsection

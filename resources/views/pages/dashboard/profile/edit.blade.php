@@ -1,4 +1,4 @@
-@extends('pages.admin._layout')
+@extends('pages.dashboard._layout')
 
 @section('title', trans('pages/general.edit_profile'))
 @section('mobile_dashboard', 'menu--active')
@@ -9,7 +9,7 @@
 
 @section('breadcrumb')
     <div class="-intro-x breadcrumb mr-auto hidden sm:flex">
-        <a href="{{ route('admin.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
+        <a href="{{ route('dashboard.index') }}" class="">{{ trans('pages/general.home') }}</a>
         <i data-feather="chevron-right" class="breadcrumb__icon"></i>
         <a href="#" class="breadcrumb--active">{{ trans('pages/general.edit_profile') }}</a>
     </div>
@@ -45,7 +45,7 @@
                     <div class="grid grid-cols-12 gap-5">
                         <div class="col-span-12 xl:col-span-4">
                             <form method="post"
-                                  action="{{ route('admin.profile.image.update') }}"
+                                  action="{{ route('dashboard.profile.image.update') }}"
                                   enctype="multipart/form-data">
                                 @csrf
                                 <div class="border border-gray-200 dark:border-dark-5 rounded-md p-5">
@@ -65,29 +65,39 @@
 
                         </div>
                         <div class="col-span-12 xl:col-span-8">
-                            <form method="post" action="{{ route('admin.profile.update') }}">
+                            <form method="post" action="{{ route('dashboard.profile.update') }}">
                                 @csrf
                                 <div>
                                     <label for="first_name">{{ trans('validation.attributes.first_name') }}</label>
                                     <input type="text" id="first_name" name="first_name"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2"
+                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('first_name') border-theme-6 @enderror"
                                            value="{{ $user->first_name }}">
+                                    @error('first_name')
+                                    <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="mt-2">
                                     <label for="last_name">{{ trans('validation.attributes.last_name') }}</label>
                                     <input type="text" id="last_name" name="last_name"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2"
+                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('last_name') border-theme-6 @enderror"
                                            value="{{ $user->last_name }}">
+                                    @error('last_name')
+                                    <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="mt-2">
                                     <label for="email">{{ trans('validation.attributes.email') }}</label>
                                     <input type="text" id="email" name="email"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2"
+                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('email') border-theme-6 @enderror"
                                            value="{{ $user->email }}">
+                                    @error('email')
+                                    <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 @if(($tempEmail = $user->userEmailReset) != null)
                                     <div class="col-12">
-                                        <div class="rounded-md flex items-center px-5 py-4 mb-2 bg-theme-6 text-white">
+                                        <div
+                                            class="rounded-md flex items-center px-5 py-4 mt-3 mb-2 bg-theme-6 text-white">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
@@ -98,7 +108,7 @@
                                                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                             </svg>
 
-                                            {{ trans('pages/admin/profile.confirm_your_email') }}
+                                            {{ trans('pages/dashboard/profile.confirm_your_email') }}
                                             <a target="_blank"
                                                href="{{ str_replace('@', 'http://',strrchr($tempEmail->email, '@')) }}">
                                                 ({{ $tempEmail->email }})
@@ -119,6 +129,7 @@
                         </div>
                     </div>
                 </div>
+                show validation message in profile
             </div>
         </div>
     </div>

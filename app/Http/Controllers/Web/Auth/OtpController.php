@@ -31,11 +31,10 @@ class OtpController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws ValidationException
      */
     public function request(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'cellphone' => ['required', 'cellphone'],
         ]);
 
@@ -98,7 +97,7 @@ class OtpController extends Controller
         $signInActivity->save();
 
         return new JsonResponse([
-            'redirect' => $user->isAdmin() ? route('admin.dashboard') : route('home'),
+            'redirect' => route('dashboard.index'),
         ]);
     }
 }

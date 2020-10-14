@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Web\Admin;
+namespace App\Http\Controllers\Web\Dashboard;
 
+use App\Enums\Permissions;
 use App\Http\Controllers\Controller;
 use App\Models\AssetCategory;
 use Exception;
@@ -11,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
 
@@ -21,7 +23,12 @@ class AssetCategoryController extends Controller
      */
     public function index()
     {
-        return view('pages.admin.asset_categories.index');
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSET_CATEGORIES_INDEX)) {
+            abort(403);
+        }
+
+        return view('pages.dashboard.asset_categories.index');
     }
 
     /**
@@ -30,6 +37,11 @@ class AssetCategoryController extends Controller
      */
     public function datatable(Request $request)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSET_CATEGORIES_INDEX)) {
+            abort(403);
+        }
+
         $categories = AssetCategory::withCount('assets');
 
         foreach ($request->input('columns') as $column) {
@@ -88,9 +100,14 @@ class AssetCategoryController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSET_CATEGORIES_CREATE)) {
+            abort(403);
+        }
+
         $parents = AssetCategory::where('parent_id', 0)->get();
 
-        return view('pages.admin.asset_categories.create', [
+        return view('pages.dashboard.asset_categories.create', [
             'parents' => $parents,
         ]);
     }
@@ -101,6 +118,11 @@ class AssetCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSET_CATEGORIES_CREATE)) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => ['required'],
             'parent' => ['nullable', 'exists:asset_categories,id'],
@@ -124,7 +146,7 @@ class AssetCategoryController extends Controller
             $category->save();
         }
 
-        return redirect()->route('admin.asset-categories.index')->with('success', trans('asset_categories.created'));
+        return redirect()->route('dashboard.asset-categories.index')->with('success', trans('asset_categories.created'));
     }
 
     /**
@@ -134,6 +156,11 @@ class AssetCategoryController extends Controller
      */
     public function destroy(AssetCategory $category)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSET_CATEGORIES_DELETE)) {
+            abort(403);
+        }
+
         $category->assets()->detach();
         $category->delete();
 

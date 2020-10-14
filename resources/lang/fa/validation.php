@@ -153,6 +153,7 @@ return [
         'first_name' => 'نام',
         'last_name' => 'نام خانوادگی',
         'cellphone' => 'شماره همراه',
+        'password' => 'گذرواژه',
         'code' => 'کد',
         'email' => 'ایمیل',
         'name' => 'نام',

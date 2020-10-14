@@ -1,6 +1,6 @@
-@extends('pages.admin._layout')
+@extends('pages.dashboard._layout')
 
-@section('title', trans('pages/admin/assets.asset_categories_create'))
+@section('title', trans('pages/dashboard/assets.asset_categories_create'))
 
 @section('mobile_asset_categories', 'menu--active')
 @section('mobile_asset_categories_create', 'menu--active')
@@ -16,16 +16,16 @@
 
 @section('breadcrumb')
     <div class="-intro-x breadcrumb mr-auto hidden sm:flex">
-        <a href="{{ route('admin.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
+        <a href="{{ route('dashboard.index') }}" class="">{{ trans('pages/general.home') }}</a>
         <i data-feather="chevron-right" class="breadcrumb__icon"></i>
-        <a href="#" class="breadcrumb--active">{{ trans('pages/admin/assets.asset_categories_create') }}</a>
+        <a href="#" class="breadcrumb--active">{{ trans('pages/dashboard/assets.asset_categories_create') }}</a>
     </div>
 @endsection
 
 @section('content')
     <div class="intro-y flex items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            {{ trans('pages/admin/assets.asset_categories_create') }}
+            {{ trans('pages/dashboard/assets.asset_categories_create') }}
         </h2>
     </div>
 
@@ -33,7 +33,7 @@
         <div class="intro-y col-span-12">
             <div class="intro-y box">
                 <div class="p-5">
-                    <form action="{{ route('admin.asset-categories.store') }}" method="post">
+                    <form action="{{ route('dashboard.asset-categories.store') }}" method="post">
                         @csrf
                         <input type="hidden" name="image" id="image" value="" required>
                         <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">

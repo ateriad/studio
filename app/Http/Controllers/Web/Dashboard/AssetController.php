@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Web\Admin;
+namespace App\Http\Controllers\Web\Dashboard;
 
+use App\Enums\Permissions;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\AssetCategory;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
 
@@ -22,19 +24,12 @@ class AssetController extends Controller
      */
     public function index()
     {
-        return view('pages.admin.assets.index');
-    }
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_INDEX)) {
+            abort(403);
+        }
 
-    /**
-     * @return Factory|View
-     */
-    public function create()
-    {
-        $categories = AssetCategory::where('parent_id', '<>', 0)->get();
-
-        return view('pages.admin.assets.create', [
-            'categories' => $categories,
-        ]);
+        return view('pages.dashboard.assets.index');
     }
 
     /**
@@ -43,6 +38,11 @@ class AssetController extends Controller
      */
     public function datatable(Request $request)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_INDEX)) {
+            abort(403);
+        }
+
         $assets = Asset::where('id', '<>', null);
 
         foreach ($request->input('columns') as $column) {
@@ -92,11 +92,33 @@ class AssetController extends Controller
     }
 
     /**
+     * @return Factory|View
+     */
+    public function create()
+    {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_CREATE)) {
+            abort(403);
+        }
+
+        $categories = AssetCategory::where('parent_id', '<>', 0)->get();
+
+        return view('pages.dashboard.assets.create', [
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
      * @param Request $request
      * @return RedirectResponse
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_CREATE)) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => ['required', 'unique:assets,name',],
             'categories' => ['required', 'array',],
@@ -119,7 +141,7 @@ class AssetController extends Controller
 
         $asset->categories()->attach($request->get('categories'));
 
-        return redirect()->route('admin.assets.index')->with('success', trans('assets.created'));
+        return redirect()->route('dashboard.assets.index')->with('success', trans('assets.created'));
     }
 
     /**
@@ -128,9 +150,14 @@ class AssetController extends Controller
      */
     public function edit(Asset $asset)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_UPDATE)) {
+            abort(403);
+        }
+
         $categories = AssetCategory::where('parent_id', '<>', 0)->get();
 
-        return view('pages.admin.assets.edit', [
+        return view('pages.dashboard.assets.edit', [
             'asset' => $asset,
             'categories' => $categories,
         ]);
@@ -143,6 +170,11 @@ class AssetController extends Controller
      */
     public function update(Request $request, Asset $asset)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_UPDATE)) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => ['required', 'unique:assets,name,' . $asset->id],
             'categories' => ['required', 'array',],
@@ -172,9 +204,9 @@ class AssetController extends Controller
         $asset->path = $path;
         $asset->save();
 
-        $asset->categories()->attach($request->get('categories'));
+        $asset->categories()->sync($request->get('categories'));
 
-        return redirect()->route('admin.assets.index')->with('success', trans('assets.updated'));
+        return redirect()->route('dashboard.assets.index')->with('success', trans('assets.updated'));
     }
 
     /**
@@ -184,6 +216,11 @@ class AssetController extends Controller
      */
     public function destroy(Asset $asset)
     {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::ASSETS_DELETE)) {
+            abort(403);
+        }
+
         $asset->delete();
 
         return new JsonResponse(['message' => trans('assets.deleted')]);

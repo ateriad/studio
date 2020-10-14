@@ -1,6 +1,6 @@
-@extends('pages.admin._layout')
+@extends('pages.dashboard._layout')
 
-@section('title', trans('pages/admin/assets.assets_list'))
+@section('title', trans('pages/dashboard/assets.assets_list'))
 
 @section('mobile_assets', 'menu--active')
 @section('mobile_assets_index', 'menu--active')
@@ -50,21 +50,21 @@
 
 @section('breadcrumb')
     <div class="-intro-x breadcrumb mr-auto hidden sm:flex">
-        <a href="{{ route('admin.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
+        <a href="{{ route('dashboard.index') }}" class="">{{ trans('pages/general.home') }}</a>
         <i data-feather="chevron-right" class="breadcrumb__icon"></i>
-        <a href="#" class="breadcrumb--active">{{ trans('pages/admin/assets.assets_list') }}</a>
+        <a href="#" class="breadcrumb--active">{{ trans('pages/dashboard/assets.assets_list') }}</a>
     </div>
 @endsection
 
 @section('content')
     <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            {{ trans('pages/admin/assets.assets_list') }}
+            {{ trans('pages/dashboard/assets.assets_list') }}
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
             <a class="button text-white bg-theme-1 shadow-md mr-2"
-               href="{{ route('admin.assets.create') }}">
-                {{ trans('pages/admin/assets.assets_create') }}
+               href="{{ route('dashboard.assets.create') }}">
+                {{ trans('pages/dashboard/assets.assets_create') }}
             </a>
         </div>
     </div>
@@ -72,7 +72,7 @@
     <div class="intro-y mt-5">
         <table id="datatable"
                data-lang="{{  (app()->getLocale() != 'en') ? asset('vendor/datatable/' . app()->getLocale() . '.json'): '' }}"
-               data-action="{{ route('admin.assets.datatable') }}">
+               data-action="{{ route('dashboard.assets.datatable') }}">
         </table>
     </div>
 @endsection
@@ -80,8 +80,8 @@
 @section('js')
     <script src="{{ asset('vendor/datatable/js/datatables.min.js') }}"></script>
     <script>
-        let deleteAssetUrl = '{{ route('admin.assets.destroy', ['asset' => 'assetId']) }}';
-        let editAssetUrl = '{{ route('admin.assets.edit', ['asset' => 'assetId']) }}';
+        let deleteAssetUrl = '{{ route('dashboard.assets.destroy', ['asset' => 'assetId']) }}';
+        let editAssetUrl = '{{ route('dashboard.assets.edit', ['asset' => 'assetId']) }}';
     </script>
     <script>
         $(document).ready(function () {

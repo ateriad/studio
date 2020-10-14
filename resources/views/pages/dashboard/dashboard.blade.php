@@ -1,4 +1,4 @@
-@extends('pages.admin._layout')
+@extends('pages.dashboard._layout')
 
 @section('title', trans('pages/general.dashboard'))
 @section('mobile_dashboard', 'menu--active')
@@ -10,7 +10,7 @@
 @section('breadcrumb')
     <div class="grid grid-cols-12 gap-6">
         <div class="-intro-x breadcrumb mr-auto hidden sm:flex">
-            <a href="{{ route('admin.dashboard') }}" class="">{{ trans('pages/general.home') }}</a>
+            <a href="{{ route('dashboard.index') }}" class="">{{ trans('pages/general.home') }}</a>
             <i data-feather="chevron-right" class="breadcrumb__icon"></i>
             <a href="#" class="breadcrumb--active">{{ trans('pages/general.dashboard') }}</a>
         </div>

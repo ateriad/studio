@@ -67,7 +67,7 @@
 <body bgcolor="#efefef" dir="rtl">
 <div class="top_nav" id="top_nav">
     <a href="{{ route('home') }}">
-        <img src="{{ asset('admin_assets/images/logo.svg') }}"
+        <img src="{{ asset('dashboard_assets/images/logo.svg') }}"
              alt="{{ trans('pages/general.app_name') }}"
              width="25px">
     </a>

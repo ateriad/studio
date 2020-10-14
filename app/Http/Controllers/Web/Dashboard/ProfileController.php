@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Admin;
+namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Mail\EmailVerification;
@@ -21,7 +21,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        return view('pages.admin.profile.edit', [
+        return view('pages.dashboard.profile.edit', [
             'user' => Auth::user(),
         ]);
     }
