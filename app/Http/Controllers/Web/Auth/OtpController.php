@@ -31,11 +31,10 @@ class OtpController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws ValidationException
      */
     public function request(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'cellphone' => ['required', 'cellphone'],
         ]);
 

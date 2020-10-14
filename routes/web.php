@@ -34,6 +34,16 @@ Route::group(['prefix' => '/auth', 'namespace' => 'Auth'], function () {
         'middleware' => ['throttle:3,1', 'guest'],
     ]);
 
+    Route::get('sign-in', [
+        'uses' => 'SignInController@show',
+        'as' => 'auth.sign-in',
+        'middleware' => 'guest',
+    ]);
+    Route::post('sign-in', [
+        'uses' => 'SignInController@request',
+        'middleware' => 'guest',
+    ]);
+
     Route::get('/sign-out', [
         'uses' => 'SignOutController@handle',
         'as' => 'auth.sign-out',
