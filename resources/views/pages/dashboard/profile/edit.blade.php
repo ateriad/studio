@@ -70,24 +70,34 @@
                                 <div>
                                     <label for="first_name">{{ trans('validation.attributes.first_name') }}</label>
                                     <input type="text" id="first_name" name="first_name"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2"
+                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('first_name') border-theme-6 @enderror"
                                            value="{{ $user->first_name }}">
+                                    @error('first_name')
+                                    <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="mt-2">
                                     <label for="last_name">{{ trans('validation.attributes.last_name') }}</label>
                                     <input type="text" id="last_name" name="last_name"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2"
+                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('last_name') border-theme-6 @enderror"
                                            value="{{ $user->last_name }}">
+                                    @error('last_name')
+                                    <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="mt-2">
                                     <label for="email">{{ trans('validation.attributes.email') }}</label>
                                     <input type="text" id="email" name="email"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2"
+                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('email') border-theme-6 @enderror"
                                            value="{{ $user->email }}">
+                                    @error('email')
+                                    <div class="text-theme-6 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 @if(($tempEmail = $user->userEmailReset) != null)
                                     <div class="col-12">
-                                        <div class="rounded-md flex items-center px-5 py-4 mb-2 bg-theme-6 text-white">
+                                        <div
+                                            class="rounded-md flex items-center px-5 py-4 mt-3 mb-2 bg-theme-6 text-white">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
@@ -119,6 +129,7 @@
                         </div>
                     </div>
                 </div>
+                show validation message in profile
             </div>
         </div>
     </div>
