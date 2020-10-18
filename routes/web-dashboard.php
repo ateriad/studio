@@ -22,6 +22,11 @@ Route::group(['prefix' => '/profile'], function () {
     ]);
 });
 
+Route::get('/studio', [
+    'uses' => 'StudioController@index',
+    'as' => 'studio.index',
+]);
+
 Route::group(['middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/asset-categories'], function () {
         Route::get('/', [

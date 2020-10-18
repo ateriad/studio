@@ -67,4 +67,10 @@
             </ul>
         </li>
     @endcan
+    <li>
+        <a href="{{ route('dashboard.studio.index') }}" class="menu @yield('mobile_studio')">
+            <div class="menu__icon"><i data-feather="home"></i></div>
+            <div class="menu__title">استادیو</div>
+        </a>
+    </li>
 </ul>
