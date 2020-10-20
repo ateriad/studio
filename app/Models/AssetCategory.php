@@ -59,9 +59,7 @@ class AssetCategory extends Model
      */
     public function parent()
     {
-        return $this->belongsTo(static::class, 'parent_id')->withDefault([
-            'name' => '',
-        ]);
+        return $this->belongsTo(static::class, 'parent_id');
     }
 
     /**

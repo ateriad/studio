@@ -78,8 +78,8 @@ class AssetCategoryController extends Controller
             $obj->id = $category->id;
             $obj->image_url = $category->image_url;
             $obj->name = $category->name;
-            $obj->parent = $category->parent->name;
-            $obj->assets_count = $category->assets_count;
+            $obj->parent = $category->parent->name ?? '-';
+            $obj->assets_count = $category->parent != null ? $category->assets_count : '-';
             $obj->updated_at = jDate($category->updated_at);
 
             $data->add($obj);

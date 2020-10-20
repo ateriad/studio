@@ -72,7 +72,7 @@
 
     <li>
         <a href="{{ route('dashboard.studio.index') }}" class="side-menu @yield('side_studio')">
-            <div class="side-menu__icon"><i data-feather="home"></i></div>
+            <div class="side-menu__icon"><i data-feather="film"></i></div>
             <div class="side-menu__title">استادیو</div>
         </a>
     </li>
