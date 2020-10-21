@@ -40,18 +40,18 @@
                 <div class="intro-y">
                     <div class="grid grid-cols-12 gap-6">
                         <div class="col-span-12 lg:col-span-8 xxl:col-span-9">
-                            <div class="intro-y box">
+                            <div class="intro-x box">
                                 <div class="px-4 py-5 flex-auto">
                                     <div class="tab-content tab-space">
                                         <div class="block" id="tab-setting">
                                             <div>
-                                                <label for="bg_color">رنگ زمینه</label>
+                                                <label for="bg_color">رنگ پرده</label>
                                                 <input type="color" id="bg_color"
                                                        class="w-full border bg-gray-100 mt-2">
                                             </div>
                                         </div>
                                         <div class="hidden" id="tab-asset">
-                                            <div class="intro-y">
+                                            <div>
                                                 <label for="background_image"
                                                        class="d-block mb-2">تصویر زمینه</label>
                                                 <input type="file"
@@ -92,13 +92,13 @@
                                             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                                                 <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-white bg-pink-600"
                                                    onclick="changeActiveTab(event,'tab-setting')">
-                                                    <i class="fas fa-cog text-base mr-1"></i> تنظیمات
+                                                    <i class="fas fa-video text-base mr-1"></i> تنظیمات ویدیو
                                                 </a>
                                             </li>
                                             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                                                 <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-pink-600 bg-white"
                                                    onclick="changeActiveTab(event,'tab-asset')">
-                                                    <i class="fas fa-image text-base mr-1"></i> زمینه
+                                                    <i class="fas fa-image text-base mr-1"></i> تنظیمات زمینه
                                                 </a>
                                             </li>
                                         </ul>
@@ -146,6 +146,17 @@
     </script>
 
     <script>
+        function componentToHex(c) {
+            console.log(c, c.toString(16))
+            let hex = c.toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+        }
+
+        function rgbToHex(r, g, b) {
+
+            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        }
+
         function hexToRgb(hex) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
@@ -155,12 +166,27 @@
             } : null;
         }
 
+        function setDefaultBgColor(pixels) {
+            let rSum = 0, gSum = 0, bSum = 0;
+            for (let i = 4000; i < 4500; i++) {
+                rSum += pixels[i * 4];
+                gSum += pixels[i * 4 + 1];
+                bSum += pixels[i * 4 + 2];
+            }
+            console.log(parseInt(rSum / 500), parseInt(gSum / 500), parseInt(bSum / 500));
+            console.log(rSum, gSum, bSum)
+            console.log(pixels)
+
+            bgColorElem.value = rgbToHex(parseInt(rSum / 500), parseInt(gSum / 500), parseInt(bSum / 500));
+        }
+
         let bgColorElem = document.getElementById("bg_color");
         let capture;
+        let k = 0;
 
         function setup() {
             bg = loadImage('{{ asset('images/test.jpg') }}');
-            myCanvas = createCanvas(390, 240);
+            myCanvas = createCanvas(450, 340);
             myCanvas.parent('canvas-container');
 
             capture = createCapture(VIDEO);
@@ -171,24 +197,25 @@
         function draw() {
             background(bg);
             let bColor = hexToRgb(bgColorElem.value)
-            const rValue = bColor.r;
-            const gValue = bColor.g;
-            const bValue = bColor.b;
 
             capture.loadPixels();
-            let l = capture.pixels.length / 4;
+            k++;
+            if (k === 60) {
+                setDefaultBgColor(capture.pixels)
+            }
 
+            let l = capture.pixels.length / 4;
             for (let i = 0; i < l; i++) {
-                let r = capture.pixels[i * 4 + 0];
+                let r = capture.pixels[i * 4];
                 let g = capture.pixels[i * 4 + 1];
                 let b = capture.pixels[i * 4 + 2];
-                if (r > rValue && g > gValue && b > bValue) {
+                if (r > bColor.r && g > bColor.g && b > bColor.b) {
                     capture.pixels[i * 4 + 3] = 0;
                 }
             }
             capture.updatePixels();
 
-            image(capture, 0, 0, 320, 240);
+            image(capture, 10, 10, 320, 240);
 
         }
 
