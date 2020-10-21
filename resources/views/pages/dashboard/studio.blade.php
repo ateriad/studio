@@ -24,14 +24,10 @@
 
 @section('content')
     <div class="intro-y items-center mt-8 mb-5">
-        <h2 class="text-lg font-medium mr-auto">
-            {{ trans('pages/general.studio') }}
-        </h2>
         <div class="grid grid-cols-12 gap-6">
             <div class="col-span-12 lg:col-span-8 xxl:col-span-9">
                 <div class="intro-y">
                     <div id="studio">
-                        studio
                         <div id='canvas-container'></div>
                     </div>
                 </div>
@@ -59,7 +55,7 @@
                                                        id="background_image" name="background_image"
                                                        placeholder="تصویر زمینه">
 
-                                                <div id="assets">
+                                                <div id="asset_categories">
                                                     @foreach($assetCategories as $category)
                                                         <a onclick="showAssets({{ $category->id }})"
                                                            class="category d-block mt-2">
@@ -76,6 +72,25 @@
                                                                 </div>
                                                             </div>
                                                         </a>
+                                                    @endforeach
+                                                </div>
+                                                <div id="assets">
+                                                    @foreach($assetCategories as $category)
+                                                        <div id="asset_{{ $category->id }}" class="asset">
+                                                            @foreach($category->assets as $asset)
+                                                                <a onclick="setAsset('{{ $asset->path_url }}')"
+                                                                   class="category d-block mt-2">
+                                                                    <div
+                                                                        class="w-full flex flex-col lg:flex-row items-center">
+                                                                        <div class="">
+                                                                            <img alt="{{ $asset->name }}"
+                                                                                 class="rounded-md"
+                                                                                 src="{{ $asset->thumbnail_url }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
                                                     @endforeach
                                                 </div>
                                             </div>
@@ -117,6 +132,12 @@
     <script src="{{ asset('vendor/p5js/p5.min.js') }}"></script>
     <script type="text/javascript">
         function changeActiveTab(event, tabID) {
+            document.getElementById('asset_categories').style.display = "block";
+            let ele = document.getElementsByClassName('asset');
+            for (let i = 0; i < ele.length; i++) {
+                ele[i].style.display = "none";
+            }
+
             let element = event.target;
             while (element.nodeName !== "A") {
                 element = element.parentNode;
@@ -141,19 +162,18 @@
         }
 
         function showAssets(categoryId) {
-            alert(categoryId)
+            document.getElementById('asset_categories').style.display = "none";
+            document.getElementById('asset_' + categoryId).style.display = "block";
         }
     </script>
 
     <script>
         function componentToHex(c) {
-            console.log(c, c.toString(16))
             let hex = c.toString(16);
             return hex.length === 1 ? "0" + hex : hex;
         }
 
         function rgbToHex(r, g, b) {
-
             return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
         }
 
@@ -173,14 +193,11 @@
                 gSum += pixels[i * 4 + 1];
                 bSum += pixels[i * 4 + 2];
             }
-            console.log(parseInt(rSum / 500), parseInt(gSum / 500), parseInt(bSum / 500));
-            console.log(rSum, gSum, bSum)
-            console.log(pixels)
-
             bgColorElem.value = rgbToHex(parseInt(rSum / 500), parseInt(gSum / 500), parseInt(bSum / 500));
         }
 
         let bgColorElem = document.getElementById("bg_color");
+        let canvasParent = document.getElementById('studio');
         let capture;
         let k = 0;
 
@@ -188,6 +205,7 @@
             bg = loadImage('{{ asset('images/test.jpg') }}');
             myCanvas = createCanvas(450, 340);
             myCanvas.parent('canvas-container');
+            resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
 
             capture = createCapture(VIDEO);
             capture.size(320, 240);
@@ -215,12 +233,10 @@
             }
             capture.updatePixels();
 
-            image(capture, 10, 10, 320, 240);
-
+            image(capture, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
         }
 
         // set background
-
         document.getElementById('background_image').addEventListener("change", function (e) {
             var file = e.target.files[0];
             var reader = new FileReader();
@@ -230,6 +246,11 @@
             };
             reader.readAsDataURL(file);
         });
+
+        function setAsset(url) {
+            console.log(url, 'url')
+            bg = loadImage(url);
+        }
     </script>
 @endsection
 

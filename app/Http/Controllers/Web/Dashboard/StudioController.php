@@ -16,7 +16,9 @@ class StudioController extends Controller
      */
     public function index()
     {
-        $assetCategories = AssetCategory::whereHas('parent')->has('assets')->get();
+        $assetCategories = AssetCategory::has('parent')->whereHas('assets', function ($q) {
+            $q->wherein('type', ['jpg', 'jpeg', 'png']);
+        })->with('assets')->get();
 
         return view('pages.dashboard.studio', [
             'assetCategories' => $assetCategories,
