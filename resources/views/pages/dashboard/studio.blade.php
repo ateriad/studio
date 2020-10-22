@@ -238,9 +238,9 @@
 
         function removePixels(screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues, r, g, b) {
             return (
-                (screenRedRangeValues.from < r ) &&
-                (screenGreenRangeValues.from < g ) &&
-                (screenBlueRangeValues.from < b )
+                screenRedRangeValues.from < r && r < screenRedRangeValues.to &&
+                screenGreenRangeValues.from < g && g < screenGreenRangeValues.to &&
+                screenBlueRangeValues.from < b && b < screenBlueRangeValues.to
             )
         }
 
@@ -316,16 +316,16 @@
             let value = hexToRgb(screenColorElem.value);
 
             screenRedRange.update({
-                from: value.r - 10,
-                to: value.r + 10
+                from: value.r - 30,
+                to: value.r + 30
             });
             screenGreenRange.update({
-                from: value.g - 10,
-                to: value.g + 10
+                from: value.g - 30,
+                to: value.g + 30
             });
             screenBlueRange.update({
-                from: value.b - 10,
-                to: value.b + 10
+                from: value.b - 30,
+                to: value.b + 30
             });
         });
 
