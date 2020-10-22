@@ -5,6 +5,7 @@
 @section('side_studio', 'side-menu--active')
 
 @section('style')
+    <link rel="stylesheet" href="{{ asset('vendor/ion.rangeSlider/css/ion.rangeSlider.min.css') }}">
     <style>
         #studio canvas {
             display: block;
@@ -41,9 +42,22 @@
                                     <div class="tab-content tab-space">
                                         <div class="block" id="tab-setting">
                                             <div>
-                                                <label for="bg_color">رنگ پرده</label>
-                                                <input type="color" id="bg_color"
+                                                <label for="screen_color">رنگ پرده</label>
+                                                <input type="color" id="screen_color" value="#00ff00"
                                                        class="w-full border bg-gray-100 mt-2">
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <label for="screen_red_range" class="mb-2">قرمز</label>
+                                                <input type="text" id="screen_red_range" value=""/>
+                                            </div>
+                                            <div class="mt-2">
+                                                <label for="screen_green_range" class="mb-2">سبز</label>
+                                                <input type="text" id="screen_green_range" value=""/>
+                                            </div>
+                                            <div class="mt-2">
+                                                <label for="screen_blue_range" class="mb-2">آبی</label>
+                                                <input type="text" id="screen_blue_range" value=""/>
                                             </div>
                                         </div>
                                         <div class="hidden" id="tab-asset">
@@ -130,6 +144,8 @@
 
 @section('js')
     <script src="{{ asset('vendor/p5js/p5.min.js') }}"></script>
+    <script src="{{ asset('vendor/ion.rangeSlider/js/ion.rangeSlider.min.js') }}"></script>
+
     <script type="text/javascript">
         function changeActiveTab(event, tabID) {
             document.getElementById('asset_categories').style.display = "block";
@@ -168,6 +184,27 @@
     </script>
 
     <script>
+        let screenColorElem = document.getElementById("screen_color");
+        let canvasParent = document.getElementById('studio');
+        let capture;
+        let k = 0;
+
+        let screenRedRangeElem = $("#screen_red_range");
+        let screenGreenRangeElem = $("#screen_green_range");
+        let screenBlueRangeElem = $("#screen_blue_range");
+        let screenRedRangeValues = {
+            'from': 0,
+            'to': 0,
+        };
+        let screenGreenRangeValues = {
+            'from': 0,
+            'to': 0,
+        };
+        let screenBlueRangeValues = {
+            'from': 0,
+            'to': 0,
+        };
+
         function componentToHex(c) {
             let hex = c.toString(16);
             return hex.length === 1 ? "0" + hex : hex;
@@ -178,7 +215,7 @@
         }
 
         function hexToRgb(hex) {
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
                 r: parseInt(result[1], 16),
                 g: parseInt(result[2], 16),
@@ -186,20 +223,112 @@
             } : null;
         }
 
-        function setDefaultBgColor(pixels) {
+        function setDefaultScreenColor(pixels) {
             let rSum = 0, gSum = 0, bSum = 0;
-            for (let i = 4000; i < 4500; i++) {
+            for (let i = 4000; i < 4100; i++) {
                 rSum += pixels[i * 4];
                 gSum += pixels[i * 4 + 1];
                 bSum += pixels[i * 4 + 2];
             }
-            bgColorElem.value = rgbToHex(parseInt(rSum / 500), parseInt(gSum / 500), parseInt(bSum / 500));
+            screenColorElem.value = rgbToHex(parseInt(rSum / 100), parseInt(gSum / 100), parseInt(bSum / 100));
+
+            let event = new Event('change');
+            screenColorElem.dispatchEvent(event);
         }
 
-        let bgColorElem = document.getElementById("bg_color");
-        let canvasParent = document.getElementById('studio');
-        let capture;
-        let k = 0;
+        function removePixels(screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues, r, g, b) {
+            return (
+                (screenRedRangeValues.from < r ) &&
+                (screenGreenRangeValues.from < g ) &&
+                (screenBlueRangeValues.from < b )
+            )
+        }
+
+        screenRedRangeElem.ionRangeSlider({
+            type: "double",
+            skin: "round",
+            min: 0,
+            max: 255,
+            from: 0,
+            to: 50,
+            grid: true,
+            onChange: function (data) {
+                screenRedRangeValues = {
+                    'from': data.from,
+                    'to': data.to,
+                }
+            },
+            onUpdate: function (data) {
+                screenRedRangeValues = {
+                    'from': data.from,
+                    'to': data.to,
+                }
+            },
+        });
+        screenGreenRangeElem.ionRangeSlider({
+            type: "double",
+            skin: "round",
+            min: 0,
+            max: 255,
+            from: 200,
+            to: 255,
+            grid: true,
+            onChange: function (data) {
+                screenGreenRangeValues = {
+                    'from': data.from,
+                    'to': data.to,
+                }
+            },
+            onUpdate: function (data) {
+                screenGreenRangeValues = {
+                    'from': data.from,
+                    'to': data.to,
+                }
+            },
+        });
+        screenBlueRangeElem.ionRangeSlider({
+            type: "double",
+            skin: "round",
+            min: 0,
+            max: 255,
+            from: 0,
+            to: 50,
+            grid: true,
+            onChange: function (data) {
+                screenBlueRangeValues = {
+                    'from': data.from,
+                    'to': data.to,
+                }
+            },
+            onUpdate: function (data) {
+                screenBlueRangeValues = {
+                    'from': data.from,
+                    'to': data.to,
+                }
+            },
+        });
+
+        let screenRedRange = screenRedRangeElem.data("ionRangeSlider");
+        let screenGreenRange = screenGreenRangeElem.data("ionRangeSlider");
+        let screenBlueRange = screenBlueRangeElem.data("ionRangeSlider");
+
+        screenColorElem.addEventListener("change", function () {
+            let value = hexToRgb(screenColorElem.value);
+
+            screenRedRange.update({
+                from: value.r - 10,
+                to: value.r + 10
+            });
+            screenGreenRange.update({
+                from: value.g - 10,
+                to: value.g + 10
+            });
+            screenBlueRange.update({
+                from: value.b - 10,
+                to: value.b + 10
+            });
+        });
+
 
         function setup() {
             bg = loadImage('{{ asset('images/test.jpg') }}');
@@ -214,12 +343,12 @@
 
         function draw() {
             background(bg);
-            let bColor = hexToRgb(bgColorElem.value)
 
             capture.loadPixels();
+
             k++;
             if (k === 60) {
-                setDefaultBgColor(capture.pixels)
+                setDefaultScreenColor(capture.pixels)
             }
 
             let l = capture.pixels.length / 4;
@@ -227,10 +356,14 @@
                 let r = capture.pixels[i * 4];
                 let g = capture.pixels[i * 4 + 1];
                 let b = capture.pixels[i * 4 + 2];
-                if (r > bColor.r && g > bColor.g && b > bColor.b) {
-                    capture.pixels[i * 4 + 3] = 0;
+
+                if (r !== 0 || g !== 0 || b !== 0) {
+                    if (removePixels(screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues, r, g, b)) {
+                        capture.pixels[i * 4 + 3] = 0;
+                    }
                 }
             }
+
             capture.updatePixels();
 
             image(capture, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
