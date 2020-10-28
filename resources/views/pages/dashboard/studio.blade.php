@@ -31,6 +31,18 @@
                     <div id="studio">
                         <div id='canvas-container'></div>
                     </div>
+                    <div id="toolbox" class="mt-2">
+                        <div>
+                            <button id="record"
+                                    class="button w-24 inline-block mr-1 mb-2 bg-theme-6 text-white inline-flex items-center"
+                                    disabled>Start Recording</button>
+                            <button id="play" class="button w-24 mr-1 mb-2 bg-theme-9 text-white" disabled>Play</button>
+                            <button id="download" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" disabled>
+                                Download
+                            </button>
+                        </div>
+                        <video id="recorded" playsinline loop></video>
+                    </div>
                 </div>
             </div>
             <div class="col-span-12 lg:col-span-4 xxl:col-span-3">
@@ -329,6 +341,7 @@
             });
         });
 
+        let mediaStream = new MediaStream();
 
         function setup() {
             bg = loadImage('{{ asset('images/test.jpg') }}');
@@ -337,8 +350,11 @@
             resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
 
             capture = createCapture(VIDEO);
+            console.log(capture)
             capture.size(320, 240);
             capture.hide();
+
+            enableRecording()
         }
 
         function draw() {
@@ -383,6 +399,109 @@
         function setAsset(url) {
             console.log(url, 'url')
             bg = loadImage(url);
+        }
+
+        let mediaRecorder;
+        let recordedBlobs;
+
+        const errorMsgElement = document.querySelector('span#errorMsg');
+        const recordedVideo = document.querySelector('video#recorded');
+        const recordButton = document.querySelector('button#record');
+        recordButton.addEventListener('click', () => {
+            if (recordButton.textContent === 'Start Recording') {
+                startRecording();
+            } else {
+                stopRecording();
+                recordButton.textContent = 'Start Recording';
+                playButton.disabled = false;
+                downloadButton.disabled = false;
+            }
+        });
+
+        const playButton = document.querySelector('button#play');
+        playButton.addEventListener('click', () => {
+            const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+            recordedVideo.src = null;
+            recordedVideo.srcObject = null;
+            recordedVideo.src = window.URL.createObjectURL(superBuffer);
+            recordedVideo.controls = true;
+            recordedVideo.play();
+        });
+
+        const downloadButton = document.querySelector('button#download');
+        downloadButton.addEventListener('click', () => {
+            const blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'test.webm';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        });
+
+        function handleDataAvailable(event) {
+            console.log('handleDataAvailable', event);
+            if (event.data && event.data.size > 0) {
+                recordedBlobs.push(event.data);
+            }
+        }
+
+        function startRecording() {
+            recordedBlobs = [];
+            let options = {mimeType: 'video/webm;codecs=vp9,opus'};
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                console.error(`${options.mimeType} is not supported`);
+                options = {mimeType: 'video/webm;codecs=vp8,opus'};
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    console.error(`${options.mimeType} is not supported`);
+                    options = {mimeType: 'video/webm'};
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        console.error(`${options.mimeType} is not supported`);
+                        options = {mimeType: ''};
+                    }
+                }
+            }
+
+            try {
+                mediaRecorder = new MediaRecorder(window.mediaStream, options);
+            } catch (e) {
+                console.error('Exception while creating MediaRecorder:', e);
+                errorMsgElement.innerHTML = `Exception while creating MediaRecorder: ${JSON.stringify(e)}`;
+                return;
+            }
+
+            console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+            recordButton.textContent = 'Stop Recording';
+            playButton.disabled = true;
+            downloadButton.disabled = true;
+            mediaRecorder.onstop = (event) => {
+                console.log('Recorder stopped: ', event);
+                console.log('Recorded Blobs: ', recordedBlobs);
+            };
+            mediaRecorder.ondataavailable = handleDataAvailable;
+            mediaRecorder.start();
+            console.log('MediaRecorder started', mediaRecorder);
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+        }
+
+        function enableRecording() {
+            let canvas = document.querySelector('canvas');
+            mediaStream = canvas.captureStream(25);
+
+            navigator.mediaDevices.getUserMedia({audio: true}).then(function (stream) {
+                mediaStream.addTrack(stream.getTracks()[0])
+            })
+
+            recordButton.disabled = false;
+            window.mediaStream = mediaStream;
         }
     </script>
 @endsection
