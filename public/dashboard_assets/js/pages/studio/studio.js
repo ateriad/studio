@@ -43,15 +43,8 @@ let k = 0;
 let screenRedRangeElem = $("#screen_red_range");
 let screenGreenRangeElem = $("#screen_green_range");
 let screenBlueRangeElem = $("#screen_blue_range");
-let screenRedRangeValues = {
-    'from': 0,
-    'to': 0,
-};
-let screenGreenRangeValues = {
-    'from': 0,
-    'to': 0,
-};
-let screenBlueRangeValues = {
+let screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues;
+screenRedRangeValues = screenGreenRangeValues = screenBlueRangeValues = {
     'from': 0,
     'to': 0,
 };
@@ -189,10 +182,8 @@ function setup() {
     resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
 
     capture = createCapture(VIDEO);
-    console.log(capture)
     capture.size(320, 240);
     capture.hide();
-
     enableRecording()
 }
 
@@ -226,13 +217,20 @@ function draw() {
 
 // set background
 document.getElementById('background_image').addEventListener("change", function (e) {
-    var file = e.target.files[0];
+    let file = e.target.files[0];
+    let type = file.type;
+
     var reader = new FileReader();
     reader.onload = function (f) {
-        var data = f.target.result;
-        bg = loadImage(data);
+        var buffer = f.target.result;
+        if (type.includes("image")) {
+            bg = loadImage(buffer);
+        }
     };
-    reader.readAsDataURL(file);
+
+    if (type.includes("image")) {
+        reader.readAsDataURL(file);
+    }
 });
 
 function setAsset(url) {
@@ -241,7 +239,6 @@ function setAsset(url) {
 }
 
 //record stream
-
 let mediaRecorder;
 let recordedBlobs;
 
