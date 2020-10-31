@@ -6,9 +6,15 @@
 
 @section('style')
     <link rel="stylesheet" href="{{ asset('vendor/ion.rangeSlider/css/ion.rangeSlider.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/dropzone-5.7.0/min/dropzone.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/dropzone-5.7.0/min/basic.min.css') }}">
     <style>
         #studio canvas {
             display: block;
+        }
+
+        #dropzone .dz-preview {
+             margin: 2px;
         }
     </style>
 @endsection
@@ -60,7 +66,27 @@
                             <div class="intro-x box">
                                 <div class="px-4 py-5 flex-auto">
                                     <div class="tab-content tab-space">
-                                        <div class="block" id="tab-setting">
+                                        <div class="block" id="tab-input">
+                                            <div>
+                                                <input type="radio" id="capture" name="input_type" value="capture">
+                                                <label for="capture">دوربین</label><br>
+                                                <input type="radio" id="file" name="input_type" value="file" checked>
+                                                <label for="file">فایل</label><br>
+                                            </div>
+                                            <div>
+                                                <div class="mt-2 col-span-12" id="choose_input_file">
+                                                    <div id="dropzone" style="min-height: unset; padding: 2px 4px;"
+                                                         class="needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
+                                                         data-action="{{ route('upload.temp') }}">
+                                                        <div class="dz-message">
+                                                            <div><i class="fas fa-plus"></i></div>
+                                                            <div>انتخاب کنید</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="hidden" id="tab-screen">
                                             <div>
                                                 <label for="screen_color">رنگ پرده</label>
                                                 <input type="color" id="screen_color" value="#00ff00"
@@ -140,8 +166,14 @@
                                         <ul class="flex mb-0 list-none flex-wrap pb-4 flex-col">
                                             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                                                 <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-white bg-pink-600"
-                                                   onclick="changeActiveTab(event,'tab-setting')">
-                                                    <i class="fas fa-video text-base mr-1"></i> تنظیمات ویدیو
+                                                   onclick="changeActiveTab(event,'tab-input')">
+                                                    <i class="fas fa-video text-base mr-1"></i> تنظیمات ورودی
+                                                </a>
+                                            </li>
+                                            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                                                <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-pink-600 bg-white"
+                                                   onclick="changeActiveTab(event,'tab-screen')">
+                                                    <i class="fas fa-video text-base mr-1"></i> تنظیمات پرده
                                                 </a>
                                             </li>
                                             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
@@ -165,6 +197,7 @@
 @section('js')
     <script src="{{ asset('vendor/p5js/p5.min.js') }}"></script>
     <script src="{{ asset('vendor/ion.rangeSlider/js/ion.rangeSlider.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendor/dropzone-5.7.0/min/dropzone.min.js') }}"></script>
 
     <script type="text/javascript">
         let defaultCanvasBg = '{{ asset('images/test.jpg') }}';

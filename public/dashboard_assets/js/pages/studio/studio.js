@@ -10,9 +10,9 @@ function changeActiveTab(event, tabID) {
     while (element.nodeName !== "A") {
         element = element.parentNode;
     }
-    ulElement = element.parentNode.parentNode;
-    aElements = ulElement.querySelectorAll("li > a");
-    tabContents = document.querySelectorAll(".tab-content > div");
+    let ulElement = element.parentNode.parentNode;
+    let aElements = ulElement.querySelectorAll("li > a");
+    let tabContents = document.querySelectorAll(".tab-content > div");
     for (let i = 0; i < aElements.length; i++) {
         aElements[i].classList.remove("text-white");
         aElements[i].classList.remove("bg-pink-600");
@@ -34,10 +34,71 @@ function showAssets(categoryId) {
     document.getElementById('asset_' + categoryId).style.display = "block";
 }
 
+$('input[type=radio][name=input_type]').change(function () {
+    if (this.value === 'capture') {
+        $('#choose_input_file').addClass('hidden');
+        useFile = false;
+        useCapture = true;
+
+        capture = createCapture({
+            video: true
+        });
+        capture.size(320, 240);
+        capture.hide();
+        k = 0;
+
+
+    } else if (this.value === 'file') {
+        $('#choose_input_file').removeClass('hidden');
+        useFile = true;
+        useCapture = false;
+
+        capture = null;
+        k = 0;
+    }
+});
+
+let myDropzone = new Dropzone("#dropzone", {
+    url: $('#dropzone').data('action'),
+    method: 'post',
+    headers: {
+        'X-CSRF-Token': $('meta[name=csrf-token]').attr('content')
+    },
+    paramName: "file",
+    maxFiles: 1,
+    acceptedFiles: 'video/*',
+    dictInvalidFileType: 'فایل قابل قبول نمیباشد.',
+    thumbnailMethod: 'contain',
+    addRemoveLinks: true,
+    dictRemoveFile: '✘',
+    init: function () {
+        this.on("removedfile", function (file) {
+            $('#image').val('');
+        });
+
+        this.on("success", function (file, responseText) {
+            inputVideoSrc = window.location.origin + '/storage/' + responseText.path;
+            video = createVideo([inputVideoSrc]);
+            video.loop();
+            video.volume(0);
+            video.hide();
+            k = 0;
+        });
+
+        this.on("maxfilesexceeded", function (file) {
+            this.removeAllFiles();
+            this.addFile(file);
+        });
+    }
+});
+
+
 // canvas scripts
 let screenColorElem = document.getElementById("screen_color");
 let canvasParent = document.getElementById('studio');
-let capture;
+let useFile, useCapture, capture, inputVideoSrc = null, video = null;
+useFile = true;
+useCapture = false;
 let k = 0;
 
 let screenRedRangeElem = $("#screen_red_range");
@@ -180,39 +241,63 @@ function setup() {
     myCanvas = createCanvas(450, 340);
     myCanvas.parent('canvas-container');
     resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
-
-    capture = createCapture(VIDEO);
-    capture.size(320, 240);
-    capture.hide();
-    enableRecording()
+    noStroke();
+    noFill();
+    enableRecording();
 }
 
 function draw() {
     background(bg);
 
-    capture.loadPixels();
+    if (useCapture && capture) {
+        capture.loadPixels();
 
-    k++;
-    if (k === 60) {
-        setDefaultScreenColor(capture.pixels)
-    }
+        k++;
+        if (k === 60) {
+            setDefaultScreenColor(capture.pixels)
+        }
 
-    let l = capture.pixels.length / 4;
-    for (let i = 0; i < l; i++) {
-        let r = capture.pixels[i * 4];
-        let g = capture.pixels[i * 4 + 1];
-        let b = capture.pixels[i * 4 + 2];
+        let l = capture.pixels.length / 4;
+        for (let i = 0; i < l; i++) {
+            let r = capture.pixels[i * 4];
+            let g = capture.pixels[i * 4 + 1];
+            let b = capture.pixels[i * 4 + 2];
 
-        if (r !== 0 || g !== 0 || b !== 0) {
-            if (removePixels(screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues, r, g, b)) {
-                capture.pixels[i * 4 + 3] = 0;
+            if (r !== 0 || g !== 0 || b !== 0) {
+                if (removePixels(screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues, r, g, b)) {
+                    capture.pixels[i * 4 + 3] = 0;
+                }
             }
         }
+        capture.updatePixels();
+
+        image(capture, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
     }
 
-    capture.updatePixels();
+    if (useFile && video != null) {
+        video.loadPixels();
 
-    image(capture, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
+        k++;
+        if (k === 60) {
+            setDefaultScreenColor(video.pixels)
+        }
+
+        let l = video.pixels.length / 4;
+        for (let i = 0; i < l; i++) {
+            let r = video.pixels[i * 4];
+            let g = video.pixels[i * 4 + 1];
+            let b = video.pixels[i * 4 + 2];
+
+            if (r !== 0 || g !== 0 || b !== 0) {
+                if (removePixels(screenRedRangeValues, screenGreenRangeValues, screenBlueRangeValues, r, g, b)) {
+                    video.pixels[i * 4 + 3] = 0;
+                }
+            }
+        }
+        video.updatePixels();
+
+        image(video, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
+    }
 }
 
 // set background
