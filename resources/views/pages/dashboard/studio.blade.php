@@ -14,7 +14,7 @@
         }
 
         #dropzone .dz-preview {
-             margin: 2px;
+            margin: 2px;
         }
     </style>
 @endsection
@@ -53,6 +53,14 @@
                             <button id="play" class="button w-24 mr-1 mb-2 bg-theme-9 text-white" disabled>پخش</button>
                             <button id="download" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" disabled>
                                 دانلود
+                            </button>
+                            <button id="start_stream" class="button w-24 mr-1 mb-2 bg-theme-12 text-white">
+                                پخش زنده
+                            </button>
+                            <button id="stop_stream" class="button w-24 mr-1 mb-2 bg-theme-12  inline-flex text-white"
+                                    style="display: none">
+                                توقف پخش
+                                <i data-loading-icon="puff" data-color="white" class="w-4 h-4 ml-auto"></i>
                             </button>
                         </div>
                         <video id="recorded" playsinline loop></video>
@@ -201,6 +209,8 @@
 
     <script type="text/javascript">
         let defaultCanvasBg = '{{ asset('images/test.jpg') }}';
+        let streamServerDomain = 'mirolstream.ir';
+        let authToken = 'token';
     </script>
 
     <script type="text/javascript" src="{{ m(asset('dashboard_assets/js/pages/studio/studio.js')) }}"></script>

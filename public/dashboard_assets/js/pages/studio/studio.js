@@ -430,3 +430,127 @@ function enableRecording() {
     recordButton.disabled = false;
     window.mediaStream = mediaStream;
 }
+
+// stream
+let ws = null;
+let wsConnectChannel = null;
+let streamMediaRecorder = null;
+
+jQuery("#start_stream").on('click', function (e) {
+    let button = $(this);
+
+    if (ws != null) {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.close();
+        }
+    }
+
+    ws = new WebSocket("wss://" + streamServerDomain + "/stream/" + button.attr('data-id') + "?session_id=" + authToken);
+
+    ws.addEventListener('open', (e) => {
+        streamMediaRecorder = new MediaRecorder(window.mediaStream, {
+            mimeType: 'video/webm;',
+            videoBitsPerSecond: 1000000,
+            audioBitsPerSecond: 128000,
+            frameRate: 30
+        });
+
+        streamMediaRecorder.addEventListener('dataavailable', (e) => {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(e.data);
+            }
+        });
+
+        streamMediaRecorder.addEventListener('stop', (e) => {
+            if (ws != null) {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.close.bind(ws);
+                }
+            }
+        });
+        streamMediaRecorder.start(4000); // Start recording, and dump data every second
+        const sleep = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds))
+        };
+        sleep(10000).then(() => {
+            wsConnectChannel = new WebSocket("wss://" + streamServerDomain + "/startchannel/" + button.attr('data-id') + "?session_id=" + authToken);
+
+            wsConnectChannel.addEventListener('open', (e) => {
+                //setInterval(ping, 30000);
+                // console.log(e);
+                $.each($("input[name='channel']:checked"), function () {
+                    wsConnectChannel.send(JSON.stringify({
+                        message: 'connectInsta',
+                        channelid: $(this).val(),
+                        status: '1',
+                        parentid: '0',
+                        name: this.getAttribute('data-name')
+                    }));
+                });
+                $(".channels-list").empty();
+            });
+
+            wsConnectChannel.addEventListener('close', (e) => {
+            });
+
+            wsConnectChannel.onmessage = function (event) {
+                let message = JSON.parse(event.data);
+                // console.log(message);
+                if (message['error'] === false) {
+                    // console.log(message);
+                    if (message['message'] === 'successAdd') {
+                        // get channel info
+                    } else if (message['message'] === "disconnectLive") {
+
+                    }
+                }
+            }
+        });
+    });
+
+    ws.addEventListener('close', (e) => {
+        if (streamMediaRecorder != null)
+            streamMediaRecorder.stop();
+        const sleep = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds))
+        };
+        sleep(8000).then(() => {
+            Swal.fire({
+                type: 'warning',
+                text: 'پخش زنده متوقف شد',
+                confirmButtonText: 'باشه',
+                confirmButtonColor: "#fcb900"
+            }).then((result) => {
+                if (result.value) {
+                    $('#start_stream').show();
+                    $('#stop_stream').hide();
+                    $('#publish_loading').hide();
+                }
+            });
+        });
+
+    });
+
+    window.onbeforeunload = function () {
+        ws.onclose = function () {
+        };
+        ws.close();
+    };
+
+    $('#stop_stream').on('click', (e) => {
+        Swal.fire('صبر کنید . . .');
+        Swal.showLoading();
+        ws.close();
+    });
+
+    $('#stop_stream').show();
+    $('#publish_loading').show();
+    $('#start_stream').hide();
+
+    Swal.fire({
+        type: 'success',
+        text: 'پخش زنده شروع شد',
+        showConfirmButton: false,
+        timer: 1500
+    });
+});
