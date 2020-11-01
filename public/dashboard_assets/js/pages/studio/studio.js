@@ -35,6 +35,8 @@ function showAssets(categoryId) {
 }
 
 $('input[type=radio][name=input_type]').change(function () {
+    startStreamBtn.removeAttr('disabled');
+
     if (this.value === 'capture') {
         $('#choose_input_file').addClass('hidden');
         useFile = false;
@@ -77,10 +79,12 @@ let myDropzone = new Dropzone("#dropzone", {
         });
 
         this.on("success", function (file, responseText) {
+            startStreamBtn.removeAttr('disabled');
+
             inputVideoSrc = window.location.origin + '/storage/' + responseText.path;
             video = createVideo([inputVideoSrc]);
             video.loop();
-            video.volume(0);
+            // video.volume(0);
             video.hide();
             k = 0;
         });
@@ -96,9 +100,7 @@ let myDropzone = new Dropzone("#dropzone", {
 // canvas scripts
 let screenColorElem = document.getElementById("screen_color");
 let canvasParent = document.getElementById('studio');
-let useFile, useCapture, capture, inputVideoSrc = null, video = null;
-useFile = true;
-useCapture = false;
+let useFile = true, useCapture = false, capture = null, inputVideoSrc = null, video = null;
 let k = 0;
 
 let screenRedRangeElem = $("#screen_red_range");
@@ -109,6 +111,11 @@ screenRedRangeValues = screenGreenRangeValues = screenBlueRangeValues = {
     'from': 0,
     'to': 0,
 };
+
+let startStreamBtn = $('#start_stream');
+let stopStreamBtn = $('#stop_stream');
+let playStreamBtn = $('#play');
+let downloadStreamBtn = $('#download');
 
 function componentToHex(c) {
     let hex = c.toString(16);
@@ -243,7 +250,6 @@ function setup() {
     resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
     noStroke();
     noFill();
-    enableRecording();
 }
 
 function draw() {
@@ -324,121 +330,34 @@ function setAsset(url) {
 }
 
 //record stream
-let mediaRecorder;
-let recordedBlobs;
+function getMediaStream() {
+    console.log(useCapture, capture, useFile, video, 111111111111)
 
-const errorMsgElement = document.querySelector('span#errorMsg');
-const recordedVideo = document.querySelector('video#recorded');
-const recordButton = document.querySelector('button#record');
-const stopRecordingButton = document.querySelector('button#stop_recording');
-
-recordButton.addEventListener('click', () => {
-    startRecording();
-});
-stopRecordingButton.addEventListener('click', () => {
-    stopRecording();
-    stopRecordingButton.style.display = "none";
-    recordButton.style.display = "inline-block";
-    playButton.disabled = false;
-    downloadButton.disabled = false;
-});
-
-const playButton = document.querySelector('button#play');
-playButton.addEventListener('click', () => {
-    const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
-    recordedVideo.src = null;
-    recordedVideo.srcObject = null;
-    recordedVideo.src = window.URL.createObjectURL(superBuffer);
-    recordedVideo.controls = true;
-    recordedVideo.play();
-});
-
-const downloadButton = document.querySelector('button#download');
-downloadButton.addEventListener('click', () => {
-    const blob = new Blob(recordedBlobs, {type: 'video/webm'});
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'test.webm';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }, 100);
-});
-
-function handleDataAvailable(event) {
-    console.log('handleDataAvailable', event);
-    if (event.data && event.data.size > 0) {
-        recordedBlobs.push(event.data);
-    }
-}
-
-function startRecording() {
-    recordedBlobs = [];
-    let options = {mimeType: 'video/webm;codecs=vp9,opus'};
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        console.error(`${options.mimeType} is not supported`);
-        options = {mimeType: 'video/webm;codecs=vp8,opus'};
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-            console.error(`${options.mimeType} is not supported`);
-            options = {mimeType: 'video/webm'};
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                console.error(`${options.mimeType} is not supported`);
-                options = {mimeType: ''};
-            }
-        }
-    }
-
-    try {
-        mediaRecorder = new MediaRecorder(window.mediaStream, options);
-    } catch (e) {
-        console.error('Exception while creating MediaRecorder:', e);
-        errorMsgElement.innerHTML = `Exception while creating MediaRecorder: ${JSON.stringify(e)}`;
-        return;
-    }
-
-    console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
-    recordButton.style.display = "none";
-    stopRecordingButton.style.display = "inline-flex";
-    stopRecordingButton.disabled = false;
-    playButton.disabled = true;
-    downloadButton.disabled = true;
-    mediaRecorder.onstop = (event) => {
-        console.log('Recorder stopped: ', event);
-        console.log('Recorded Blobs: ', recordedBlobs);
-    };
-    mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorder.start();
-    console.log('MediaRecorder started', mediaRecorder);
-}
-
-function stopRecording() {
-    mediaRecorder.stop();
-}
-
-function enableRecording() {
     let canvas = document.querySelector('canvas');
-    mediaStream = canvas.captureStream(25);
+    if ('captureStream' in canvas) {
+        mediaStream = canvas.captureStream();
+    } else if ('mozCaptureStream' in canvas) {
+        mediaStream = canvas.mozCaptureStream();
+    } else if (!self.disableLogs) {
+        console.error('Upgrade to latest Chrome or otherwise enable this flag: chrome://flags/#enable-experimental-web-platform-features');
+    }
 
     navigator.mediaDevices.getUserMedia({audio: true}).then(function (stream) {
         mediaStream.addTrack(stream.getTracks()[0])
     })
 
-    recordButton.disabled = false;
+
     window.mediaStream = mediaStream;
+
+    return mediaStream;
 }
 
-// stream
-let ws = null;
-let wsConnectChannel = null;
-let streamMediaRecorder = null;
+let ws, mediaRecorder;
 
-jQuery("#start_stream").on('click', function (e) {
+startStreamBtn.on('click', function (e) {
     let button = $(this);
-
+    mediaStream = getMediaStream();
+    console.log(mediaStream)
     if (ws != null) {
         if (ws.readyState === WebSocket.OPEN) {
             ws.close();
@@ -448,20 +367,20 @@ jQuery("#start_stream").on('click', function (e) {
     ws = new WebSocket("wss://" + streamServerDomain + "/stream/" + button.attr('data-id') + "?session_id=" + authToken);
 
     ws.addEventListener('open', (e) => {
-        streamMediaRecorder = new MediaRecorder(window.mediaStream, {
+        mediaRecorder = new MediaRecorder(mediaStream, {
             mimeType: 'video/webm;',
             videoBitsPerSecond: 1000000,
             audioBitsPerSecond: 128000,
             frameRate: 30
         });
 
-        streamMediaRecorder.addEventListener('dataavailable', (e) => {
+        mediaRecorder.addEventListener('dataavailable', (e) => {
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(e.data);
             }
         });
 
-        streamMediaRecorder.addEventListener('stop', (e) => {
+        mediaRecorder.addEventListener('stop', (e) => {
             if (ws != null) {
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.close.bind(ws);
@@ -469,48 +388,11 @@ jQuery("#start_stream").on('click', function (e) {
             }
         });
         streamMediaRecorder.start(4000); // Start recording, and dump data every second
-        const sleep = (milliseconds) => {
-            return new Promise(resolve => setTimeout(resolve, milliseconds))
-        };
-        sleep(10000).then(() => {
-            wsConnectChannel = new WebSocket("wss://" + streamServerDomain + "/startchannel/" + button.attr('data-id') + "?session_id=" + authToken);
-
-            wsConnectChannel.addEventListener('open', (e) => {
-                //setInterval(ping, 30000);
-                // console.log(e);
-                $.each($("input[name='channel']:checked"), function () {
-                    wsConnectChannel.send(JSON.stringify({
-                        message: 'connectInsta',
-                        channelid: $(this).val(),
-                        status: '1',
-                        parentid: '0',
-                        name: this.getAttribute('data-name')
-                    }));
-                });
-                $(".channels-list").empty();
-            });
-
-            wsConnectChannel.addEventListener('close', (e) => {
-            });
-
-            wsConnectChannel.onmessage = function (event) {
-                let message = JSON.parse(event.data);
-                // console.log(message);
-                if (message['error'] === false) {
-                    // console.log(message);
-                    if (message['message'] === 'successAdd') {
-                        // get channel info
-                    } else if (message['message'] === "disconnectLive") {
-
-                    }
-                }
-            }
-        });
     });
 
     ws.addEventListener('close', (e) => {
-        if (streamMediaRecorder != null)
-            streamMediaRecorder.stop();
+        if (mediaRecorder != null)
+            mediaRecorder.stop();
         const sleep = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds))
         };
@@ -537,13 +419,13 @@ jQuery("#start_stream").on('click', function (e) {
         ws.close();
     };
 
-    $('#stop_stream').on('click', (e) => {
+    stopStreamBtn.on('click', (e) => {
         Swal.fire('صبر کنید . . .');
         Swal.showLoading();
         ws.close();
     });
 
-    $('#stop_stream').show();
+    stopStreamBtn.show();
     $('#publish_loading').show();
     $('#start_stream').hide();
 
