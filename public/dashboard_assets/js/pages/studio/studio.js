@@ -113,6 +113,7 @@ screenRedRangeValues = screenGreenRangeValues = screenBlueRangeValues = {
 };
 
 let startStreamBtn = $('#start_stream');
+const startStreamButton = document.querySelector('button#start_stream');
 let stopStreamBtn = $('#stop_stream');
 let playStreamBtn = $('#play');
 let downloadStreamBtn = $('#download');
@@ -330,7 +331,7 @@ function setAsset(url) {
 }
 
 //record stream
-function getMediaStream() {
+async function getMediaStream() {
     console.log(useCapture, capture, useFile, video, 111111111111)
 
     let canvas = document.querySelector('canvas');
@@ -342,10 +343,9 @@ function getMediaStream() {
         console.error('Upgrade to latest Chrome or otherwise enable this flag: chrome://flags/#enable-experimental-web-platform-features');
     }
 
-    navigator.mediaDevices.getUserMedia({audio: true}).then(function (stream) {
-        mediaStream.addTrack(stream.getTracks()[0])
-    })
+    const audioStream = await navigator.mediaDevices.getUserMedia({audio: true});
 
+    mediaStream.addTrack(audioStream.getTracks()[0])
 
     window.mediaStream = mediaStream;
 
@@ -354,20 +354,20 @@ function getMediaStream() {
 
 let ws, mediaRecorder;
 
-startStreamBtn.on('click', function (e) {
-    let button = $(this);
-    mediaStream = getMediaStream();
-    console.log(mediaStream)
+startStreamButton.addEventListener('click', async () => {
+    await getMediaStream();
+
+    console.log(window.mediaStream, 11111111, 'mediaStream')
     if (ws != null) {
         if (ws.readyState === WebSocket.OPEN) {
             ws.close();
         }
     }
 
-    ws = new WebSocket(streamServerDomain  + "?session_id=" + authToken);
+    ws = new WebSocket(streamServerDomain + "?session_id=" + authToken);
 
     ws.addEventListener('open', (e) => {
-        mediaRecorder = new MediaRecorder(mediaStream, {
+        mediaRecorder = new MediaRecorder(window.mediaStream, {
             mimeType: 'video/webm;',
             videoBitsPerSecond: 1000000,
             audioBitsPerSecond: 128000,
@@ -375,6 +375,7 @@ startStreamBtn.on('click', function (e) {
         });
 
         mediaRecorder.addEventListener('dataavailable', (e) => {
+            console.log(ws.readyState, WebSocket.OPEN, 333333)
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(e.data);
             }
@@ -387,7 +388,13 @@ startStreamBtn.on('click', function (e) {
                 }
             }
         });
-        streamMediaRecorder.start(4000); // Start recording, and dump data every second
+        mediaRecorder.start(1000);
+
+        console.log(mediaRecorder.state, ' 11111.log(mediaRecorder.state);11111');
+
+        mediaRecorder.onstop = function (e) {
+            console.log("data available after MediaRecorder.stop() called.");
+        }
     });
 
     ws.addEventListener('close', (e) => {

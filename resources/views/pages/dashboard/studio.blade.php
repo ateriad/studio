@@ -45,8 +45,7 @@
                                 ضبط کردن
                             </button>
                             <button id="stop_stream" style="display: none"
-                                    class="button w-24 mr-1 mb-2 bg-theme-6 text-white inline-flex items-center"
-                                    disabled>
+                                    class="button w-24 mr-1 mb-2 bg-theme-6 text-white inline-flex items-center">
                                 توقف
                                 <i data-loading-icon="puff" data-color="white" class="w-4 h-4 ml-auto"></i>
                             </button>
