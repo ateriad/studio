@@ -364,7 +364,7 @@ startStreamBtn.on('click', function (e) {
         }
     }
 
-    ws = new WebSocket("wss://" + streamServerDomain + "/stream/" + button.attr('data-id') + "?session_id=" + authToken);
+    ws = new WebSocket(streamServerDomain  + "?session_id=" + authToken);
 
     ws.addEventListener('open', (e) => {
         mediaRecorder = new MediaRecorder(mediaStream, {
@@ -426,8 +426,7 @@ startStreamBtn.on('click', function (e) {
     });
 
     stopStreamBtn.show();
-    $('#publish_loading').show();
-    $('#start_stream').hide();
+    startStreamBtn.hide();
 
     Swal.fire({
         type: 'success',

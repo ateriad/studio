@@ -50,12 +50,11 @@
                                 توقف
                                 <i data-loading-icon="puff" data-color="white" class="w-4 h-4 ml-auto"></i>
                             </button>
-                            <button id="play" class="button w-24 mr-1 mb-2 bg-theme-9 text-white" style="display: none"
-                                    disabled>
+                            <button id="play" class="button w-24 mr-1 mb-2 bg-theme-9 text-white" style="display: none">
                                 پخش
                             </button>
                             <button id="download" class="button w-24 mr-1 mb-2 bg-theme-1 text-white"
-                                    style="display: none" disabled>
+                                    style="display: none">
                                 دانلود
                             </button>
                         </div>
@@ -205,7 +204,7 @@
 
     <script type="text/javascript">
         let defaultCanvasBg = '{{ asset('images/test.jpg') }}';
-        let streamServerDomain = 'tagta.ir:3000';
+        let streamServerDomain = 'ws://localhost:3000/stream/{{ auth()->id() }}';
         let authToken = 'token';
     </script>
 
