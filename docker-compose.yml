@@ -5,7 +5,7 @@ services:
     image: nginx:1.19.2-alpine
     container_name: studio_nginx
     volumes:
-      - ./:/app
+      - ./laravel:/app
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/nginx/logs/:/var/log/nginx/
     ports:
@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - ./:/app
+      - ./laravel:/app
       - ~/.ssh:/root/.ssh
     ports:
       - ${PHP_EXPOSED_PORT:-0}:9000
@@ -55,7 +55,7 @@ services:
     restart: always
     working_dir: /app
     volumes:
-      - ./:/app
+      - ./laravel:/app
       - "./docker/supervisor/config/supervisord.conf:/etc/supervisor/supervisord.conf"
       - "./docker/supervisor/config/laravel-worker.conf:/etc/supervisor/conf.d/app.conf"
     command: [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
