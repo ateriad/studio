@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssetCategory;
+use App\Services\Token\Token;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudioController extends Controller
 {
@@ -20,8 +21,13 @@ class StudioController extends Controller
             $q->wherein('type', ['jpg', 'jpeg', 'png']);
         })->with('assets')->get();
 
+        /** @var Token $token */
+        $token = app(Token::class);
+        $jwt = $token->generate(Auth::id());
+
         return view('pages.dashboard.studio', [
             'assetCategories' => $assetCategories,
+            'socketServerUrl' => "ws://localhost:3000/stream/$jwt",
         ]);
     }
 }

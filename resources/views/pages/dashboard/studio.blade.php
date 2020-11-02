@@ -41,7 +41,7 @@
                         <div>
                             <button id="start_stream"
                                     class="button w-24 mr-1 mb-2 bg-theme-6 text-white"
-                                    disabled >
+                                    disabled>
                                 ضبط کردن
                             </button>
                             <button id="stop_stream" style="display: none"
@@ -203,7 +203,7 @@
 
     <script type="text/javascript">
         let defaultCanvasBg = '{{ asset('images/test.jpg') }}';
-        let streamServerDomain = 'ws://localhost:3000/stream/{{ auth()->id() }}';
+        let streamServerDomain = '{{ $socketServerUrl }}';
         let authToken = 'token';
     </script>
 

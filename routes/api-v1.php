@@ -20,6 +20,8 @@ Route::group(['middleware' => 'auth.api'], function () {
     Route::group(['prefix' => '/assets'], function () {
         Route::get('/', 'Asset\AssetController@index');
     });
+
+    Route::get('/stream/create', 'Stream\StreamController@create');
 });
 
 

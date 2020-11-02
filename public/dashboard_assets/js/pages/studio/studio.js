@@ -364,7 +364,7 @@ startStreamButton.addEventListener('click', async () => {
         }
     }
 
-    ws = new WebSocket(streamServerDomain + "?session_id=" + authToken);
+    ws = new WebSocket(streamServerDomain);
 
     ws.addEventListener('open', (e) => {
         mediaRecorder = new MediaRecorder(window.mediaStream, {
@@ -388,7 +388,7 @@ startStreamButton.addEventListener('click', async () => {
                 }
             }
         });
-        mediaRecorder.start(1000);
+        mediaRecorder.start(4000);
 
         console.log(mediaRecorder.state, ' 11111.log(mediaRecorder.state);11111');
 
@@ -403,10 +403,10 @@ startStreamButton.addEventListener('click', async () => {
         const sleep = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds))
         };
-        sleep(8000).then(() => {
+        sleep(2000).then(() => {
             Swal.fire({
                 type: 'warning',
-                text: 'پخش زنده متوقف شد',
+                text: 'ضبط متوقف شد',
                 confirmButtonText: 'باشه',
                 confirmButtonColor: "#fcb900"
             }).then((result) => {
@@ -416,6 +416,9 @@ startStreamButton.addEventListener('click', async () => {
                     $('#publish_loading').hide();
                 }
             });
+
+            stopStreamBtn.hide();
+            startStreamBtn.show();
         });
 
     });
@@ -437,7 +440,7 @@ startStreamButton.addEventListener('click', async () => {
 
     Swal.fire({
         type: 'success',
-        text: 'پخش زنده شروع شد',
+        text: 'ضبط شروع شد',
         showConfirmButton: false,
         timer: 1500
     });
