@@ -49,26 +49,37 @@ services:
     volumes:
       - ./docker/mysql:/var/lib/mysql
 
-  supervisor:
-    build: ./docker/supervisor
-    container_name: studio_supervisor
-    restart: always
-    working_dir: /app
-    volumes:
-      - ./laravel:/app
-      - "./docker/supervisor/config/supervisord.conf:/etc/supervisor/supervisord.conf"
-      - "./docker/supervisor/config/laravel-worker.conf:/etc/supervisor/conf.d/app.conf"
-    command: [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
-    depends_on:
-      - php
+#  supervisor:
+#    build: ./docker/supervisor
+#    container_name: studio_supervisor
+#    restart: always
+#    working_dir: /app
+#    volumes:
+#      - ./laravel:/app
+#      - "./docker/supervisor/config/supervisord.conf:/etc/supervisor/supervisord.conf"
+#      - "./docker/supervisor/config/laravel-worker.conf:/etc/supervisor/conf.d/app.conf"
+#    command: [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
+#    depends_on:
+#      - php
 
-  cron:
-    build: ./docker/php/cli
-    container_name: studio_cron
-    restart: always
-    working_dir: /app
-    command: [ "/usr/sbin/crond", "-f", "-d", "0" ]
+#  cron:
+#    build: ./docker/php/cli
+#    container_name: studio_cron
+#    restart: always
+#    working_dir: /app
+#    command: [ "/usr/sbin/crond", "-f", "-d", "0" ]
+#    volumes:
+#      - ./laravel:/app
+#    depends_on:
+#      - php
+
+  node:
+    build: ./docker/node
+    container_name: studio_node
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
     volumes:
       - ./:/app
-    depends_on:
-      - php
+    ports:
+      - ${NODE_EXPOSED_PORT:-0}:3000

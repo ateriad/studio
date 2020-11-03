@@ -25,9 +25,14 @@ class StudioController extends Controller
         $token = app(Token::class);
         $jwt = $token->generate(Auth::id());
 
+        $socketServerUrl = "wss://tagta.ir:3000/stream/$jwt";
+        if (app()->environment('local')) {
+            $socketServerUrl = "ws://localhost:3000/stream/$jwt";
+        }
+
         return view('pages.dashboard.studio', [
             'assetCategories' => $assetCategories,
-            'socketServerUrl' => "ws://localhost:3000/stream/$jwt",
+            'socketServerUrl' => $socketServerUrl,
         ]);
     }
 }

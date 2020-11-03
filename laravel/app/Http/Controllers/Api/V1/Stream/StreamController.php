@@ -16,8 +16,7 @@ class StreamController extends Controller
         $fileName = time() . Str::random(30);
 
         return new JsonResponse([
-//            'fileDirectory' => storage_path("app/public/streams/$user->id/"),
-            'fileDirectory' => preg_replace('/app/', "home/mohammad/Projects/studio/studio/", storage_path("app/public/streams/$user->id/"), 1),
+            'fileDirectory' => substr( storage_path("app/public/streams/$user->id/"),  4),
             'fileName' => "$fileName.flv",
         ]);
     }

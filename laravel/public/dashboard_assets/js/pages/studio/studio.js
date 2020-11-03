@@ -357,7 +357,6 @@ let ws, mediaRecorder;
 startStreamButton.addEventListener('click', async () => {
     await getMediaStream();
 
-    console.log(window.mediaStream, 11111111, 'mediaStream')
     if (ws != null) {
         if (ws.readyState === WebSocket.OPEN) {
             ws.close();
