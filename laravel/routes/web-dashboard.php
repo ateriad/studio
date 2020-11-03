@@ -27,6 +27,11 @@ Route::get('/playout', [
     'as' => 'playout.index',
 ]);
 
+Route::get('/streams', [
+    'uses' => 'StreamController@index',
+    'as' => 'streams.index',
+]);
+
 Route::group(['middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/asset-categories'], function () {
         Route::get('/', [

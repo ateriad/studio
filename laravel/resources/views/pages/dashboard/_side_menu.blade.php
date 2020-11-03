@@ -76,4 +76,10 @@
             <div class="side-menu__title">استادیو</div>
         </a>
     </li>
+    <li>
+        <a href="{{ route('dashboard.streams.index') }}" class="side-menu @yield('side_streams')">
+            <div class="side-menu__icon"><i data-feather="video"></i></div>
+            <div class="side-menu__title">رکورد ها</div>
+        </a>
+    </li>
 </ul>

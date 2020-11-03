@@ -73,4 +73,10 @@
             <div class="menu__title">استادیو</div>
         </a>
     </li>
+    <li>
+        <a href="{{ route('dashboard.streams.index') }}" class="menu @yield('mobile_streams')">
+            <div class="menu__icon"><i data-feather="film"></i></div>
+            <div class="menu__title">استادیو</div>
+        </a>
+    </li>
 </ul>
