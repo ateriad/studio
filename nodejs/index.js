@@ -37,18 +37,18 @@ wss.on('connection', (ws, req) => {
             Authorization: 'Bearer ' + userToken,
         }
     }).then(function (response) {
-        const fileName = response.data['fileName']
-        const fileDirectory = '/app/laravel' + response.data['fileDirectory']
+        const fileName = response.data['file']
+        const path =  '/app/laravel/storage/app/public/' + fileName
+        const dir = path.replace(/[^\/]*$/, '');
 
-        if (!fs.existsSync(fileDirectory)) {
-            fs.mkdirSync(fileDirectory, {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, {
                 recursive: true
             });
         }
 
-
         const ffmpeg = child_process.spawn('ffmpeg', [
-            '-i', '-', '-c:v', 'libx264', '-preset', 'slow', '-f', 'flv', fileDirectory + fileName
+            '-i', '-', '-c:v', 'libx264', '-preset', 'slow', '-f', 'flv', path
         ]);
 
         ffmpeg.on('close', (code, signal) => {
@@ -71,7 +71,7 @@ wss.on('connection', (ws, req) => {
         });
 
     }).catch(function (error) {
-        console.log(error.response.data);
+        console.log(error);
         ws.terminate();
     })
 });
