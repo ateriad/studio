@@ -10,7 +10,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 
-class StudioController extends Controller
+class PlayoutController extends Controller
 {
     /**
      * @return Application|Factory|View
@@ -30,7 +30,7 @@ class StudioController extends Controller
             $socketServerUrl = "ws://localhost:3000/stream/$jwt";
         }
 
-        return view('pages.dashboard.studio', [
+        return view('pages.dashboard.playout.playout', [
             'assetCategories' => $assetCategories,
             'socketServerUrl' => $socketServerUrl,
         ]);

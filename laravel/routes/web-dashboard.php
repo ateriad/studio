@@ -22,9 +22,9 @@ Route::group(['prefix' => '/profile'], function () {
     ]);
 });
 
-Route::get('/studio', [
-    'uses' => 'StudioController@index',
-    'as' => 'studio.index',
+Route::get('/playout', [
+    'uses' => 'PlayoutController@index',
+    'as' => 'playout.index',
 ]);
 
 Route::group(['middleware' => 'auth.admin'], function () {
