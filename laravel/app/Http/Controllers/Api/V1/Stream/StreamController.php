@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Stream;
 
+use App\Enums\StreamStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Stream;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +23,7 @@ class StreamController extends Controller
         $stream = Stream::create([
             'user_id' => $user->id,
             'file' => "streams/$user->id/" . time() . Str::random(30) . ".flv",
-            'status' => 0,
+            'status' => StreamStatus::Start,
         ]);
 
         return new JsonResponse($stream);
