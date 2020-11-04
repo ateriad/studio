@@ -19,7 +19,9 @@
 #### 5. Start
 `docker-compose up -d`
 
-#### 6. Composer and Migrations
+#### 6. Dependencies and Migrations
+`docker-compose exec node npm install --prefix nodejs`
+
 `docker-compose exec php composer install`
 
 `docker-compose exec php php artisan key:generate`

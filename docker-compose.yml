@@ -81,5 +81,6 @@ services:
       - NODE_ENV=production
     volumes:
       - ./:/app
+      - ./nodejs/package.json:/app/nodejs/package.json
     ports:
       - ${NODE_EXPOSED_PORT:-0}:3000

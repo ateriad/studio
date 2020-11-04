@@ -8,7 +8,6 @@ RUN apt-get update && apt-get -y install curl ffmpeg
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get -y install nodejs
 RUN npm install -g nodemon
-RUN npm install --prefix ${APP_DIR}/nodejs
 
 EXPOSE 3000
 
