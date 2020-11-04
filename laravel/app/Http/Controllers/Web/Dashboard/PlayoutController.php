@@ -25,14 +25,9 @@ class PlayoutController extends Controller
         $token = app(Token::class);
         $jwt = $token->generate(Auth::id());
 
-        $socketServerUrl = "wss://tagta.ir/wss/stream/$jwt";
-        if (app()->environment('local')) {
-            $socketServerUrl = "ws://localhost:3000/stream/$jwt";
-        }
-
         return view('pages.dashboard.playout.playout', [
             'assetCategories' => $assetCategories,
-            'socketServerUrl' => $socketServerUrl,
+            'socketServerUrl' => config('app.socket_url') . "/stream/$jwt",
         ]);
     }
 }
