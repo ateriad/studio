@@ -49,18 +49,18 @@ services:
     volumes:
       - ./docker/mysql:/var/lib/mysql
 
-#  supervisor:
-#    build: ./docker/supervisor
-#    container_name: studio_supervisor
-#    restart: always
-#    working_dir: /app
-#    volumes:
-#      - ./laravel:/app
-#      - "./docker/supervisor/config/supervisord.conf:/etc/supervisor/supervisord.conf"
-#      - "./docker/supervisor/config/laravel-worker.conf:/etc/supervisor/conf.d/app.conf"
-#    command: [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
-#    depends_on:
-#      - php
+  supervisor:
+    build: ./docker/supervisor
+    container_name: studio_supervisor
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./laravel:/app
+      - "./docker/supervisor/config/supervisord.conf:/etc/supervisor/supervisord.conf"
+      - "./docker/supervisor/config/laravel-worker.conf:/etc/supervisor/conf.d/app.conf"
+    command: [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
+    depends_on:
+      - php
 
 #  cron:
 #    build: ./docker/php/cli
