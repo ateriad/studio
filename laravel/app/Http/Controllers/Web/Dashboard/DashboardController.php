@@ -15,6 +15,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        dd(env('APP_ENV'), config('app.env'));
         return view('pages.dashboard.dashboard');
     }
 }

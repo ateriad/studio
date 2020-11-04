@@ -9,6 +9,8 @@
 #### 3. Environment
 `cp .env.example .env` 
 
+`cp laravel/.env.example laravel/.env` 
+
 - fill in the blanks(<sub><sup>NGINX_EXPOSED_PORT, DB_EXPOSED_PORT, ...</sup></sub>)
 
 #### 4. Build
@@ -28,9 +30,9 @@
 
 #### 7. Permissions
 
-`sudo chmod -R 0777 storage`
+`sudo chmod -R 0777 larave/storage`
 
-`sudo chmod -R 0777 bootstrap/cache`
+`sudo chmod -R 0777 laravel/bootstrap/cache`
 
 #### 8. Launch
 
