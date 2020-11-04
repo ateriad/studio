@@ -78,8 +78,15 @@
     </li>
     <li>
         <a href="{{ route('dashboard.streams.index') }}" class="side-menu @yield('side_streams')">
-            <div class="side-menu__icon"><i data-feather="video"></i></div>
+            <div class="side-menu__icon"><i data-feather="play"></i></div>
             <div class="side-menu__title">رکورد ها</div>
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ route('dashboard.settings') }}" class="side-menu @yield('side_settings')">
+            <div class="side-menu__icon"><i data-feather="settings"></i></div>
+            <div class="side-menu__title">تنظیمات</div>
         </a>
     </li>
 </ul>

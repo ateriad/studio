@@ -73,10 +73,18 @@
             <div class="menu__title">استادیو</div>
         </a>
     </li>
+
     <li>
         <a href="{{ route('dashboard.streams.index') }}" class="menu @yield('mobile_streams')">
-            <div class="menu__icon"><i data-feather="film"></i></div>
-            <div class="menu__title">استادیو</div>
+            <div class="menu__icon"><i data-feather="play"></i></div>
+            <div class="menu__title">رکورد ها</div>
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ route('dashboard.settings') }}" class="menu @yield('mobile_settings')">
+            <div class="menu__icon"><i data-feather="settings"></i></div>
+            <div class="menu__title">تنظیمات</div>
         </a>
     </li>
 </ul>

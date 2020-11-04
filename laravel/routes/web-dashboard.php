@@ -43,6 +43,11 @@ Route::group(['prefix' => '/streams'], function () {
     ]);
 });
 
+Route::get('/settings', [
+    'uses' => 'SettingController@index',
+    'as' => 'settings',
+]);
+
 Route::group(['middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/asset-categories'], function () {
         Route::get('/', [
