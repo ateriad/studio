@@ -27,10 +27,21 @@ Route::get('/playout', [
     'as' => 'playout.index',
 ]);
 
-Route::get('/streams', [
-    'uses' => 'StreamController@index',
-    'as' => 'streams.index',
-]);
+
+Route::group(['prefix' => '/streams'], function () {
+    Route::get('/', [
+        'uses' => 'StreamController@index',
+        'as' => 'streams.index',
+    ]);
+    Route::post('/datatable', [
+        'uses' => 'StreamController@datatable',
+        'as' => 'streams.datatable',
+    ]);
+    Route::delete('/{stream}', [
+        'uses' => 'StreamController@destroy',
+        'as' => 'streams.destroy',
+    ]);
+});
 
 Route::group(['middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/asset-categories'], function () {

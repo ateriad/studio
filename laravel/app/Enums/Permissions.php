@@ -13,4 +13,6 @@ class Permissions extends Enum
     const ASSETS_CREATE = 'assets-create';
     const ASSETS_UPDATE = 'assets-update';
     const ASSETS_DELETE = 'assets-delete';
+
+    const STREAMS_DELETE = 'streams-delete';
 }
