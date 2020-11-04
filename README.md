@@ -30,7 +30,7 @@
 
 #### 7. Permissions
 
-`sudo chmod -R 0777 larave/storage`
+`sudo chmod -R 0777 laravel/storage`
 
 `sudo chmod -R 0777 laravel/bootstrap/cache`
 
