@@ -11,4 +11,4 @@ RUN npm install -g nodemon
 
 EXPOSE 3000
 
-CMD ["nodemon", "nodejs/index.js"]
+CMD ["nodemon", "--watch", "nodejs", "nodejs/index.js"]

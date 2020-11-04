@@ -62,16 +62,16 @@ services:
     depends_on:
       - php
 
-#  cron:
-#    build: ./docker/php/cli
-#    container_name: studio_cron
-#    restart: always
-#    working_dir: /app
-#    command: [ "/usr/sbin/crond", "-f", "-d", "0" ]
-#    volumes:
-#      - ./laravel:/app
-#    depends_on:
-#      - php
+  #  cron:
+  #    build: ./docker/php/cli
+  #    container_name: studio_cron
+  #    restart: always
+  #    working_dir: /app
+  #    command: [ "/usr/sbin/crond", "-f", "-d", "0" ]
+  #    volumes:
+  #      - ./laravel:/app
+  #    depends_on:
+  #      - php
 
   node:
     build: ./docker/node
@@ -81,6 +81,5 @@ services:
       - NODE_ENV=production
     volumes:
       - ./:/app
-      - ./nodejs/package.json:/app/nodejs/package.json
     ports:
       - ${NODE_EXPOSED_PORT:-0}:3000
