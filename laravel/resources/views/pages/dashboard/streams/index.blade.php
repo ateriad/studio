@@ -129,6 +129,14 @@
                     },
                     visible: isAdmin,
                     orderable: false,
+                }, {
+                    name: "created_at",
+                    title: "created_at",
+                    render: function (data, type, row, meta) {
+                        return '<small style="direction: ltr">' + row['created_at'] + '<small>';
+                    },
+                    visible: isAdmin,
+                    orderable: false,
                 }
             ];
 

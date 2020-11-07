@@ -65,6 +65,7 @@ class StreamController extends Controller
             $obj->thumbnail = asset('images/test.jpg');
             $obj->path = public_storage_path($stream->file);
             $obj->updated_at = jDate($stream->updated_at);
+            $obj->created_at = jDate($stream->created_at);
 
             $obj->delete_url = route('dashboard.streams.destroy', ['stream' => $stream->id]);
 

@@ -125,9 +125,17 @@ let bgDropzone = new Dropzone("#background_dropzone", {
 
         this.on("success", function (file, responseText) {
             let src = window.location.origin + '/storage/' + responseText.path;
+            backgroundVideo = null;
+            backgroundImage = null;
 
             if (file.type.includes("image")) {
-                bg = loadImage(src);
+                backgroundImage = loadImage(src);
+            } else if (file.type.includes("video")) {
+                inputVideoSrc = window.location.origin + '/storage/' + responseText.path;
+                backgroundVideo = createVideo([src]);
+                backgroundVideo.loop();
+                backgroundVideo.volume(0);
+                backgroundVideo.hide();
             }
         });
 
@@ -142,7 +150,8 @@ let bgDropzone = new Dropzone("#background_dropzone", {
 // canvas scripts
 let screenColorElem = document.getElementById("screen_color");
 let canvasParent = document.getElementById('studio');
-let useFile = true, useCapture = false, capture = null, inputVideoSrc = null, video = null;
+let useFile = true, useCapture = false, capture = null, inputVideoSrc = null, video = null, backgroundVideo = null,
+    backgroundImage = null;
 let k = 0;
 
 let topOffset = document.getElementById('top_offset');
@@ -293,7 +302,7 @@ screenColorElem.addEventListener("change", function () {
 let mediaStream = new MediaStream();
 
 function setup() {
-    bg = loadImage(defaultCanvasBg);
+    backgroundImage = loadImage(defaultCanvasBg);
     myCanvas = createCanvas(450, 340);
     myCanvas.parent('canvas-container');
     resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
@@ -302,7 +311,12 @@ function setup() {
 }
 
 function draw() {
-    background(bg);
+    if (backgroundImage != null) {
+        background(backgroundImage);
+    }
+    if (backgroundVideo != null) {
+        image(backgroundVideo, 0, 0);
+    }
 
     if (useCapture && capture) {
         capture.loadPixels();
@@ -357,7 +371,7 @@ function draw() {
 
 function setAsset(url) {
     console.log(url, 'url')
-    bg = loadImage(url);
+    backgroundImage = loadImage(url);
 }
 
 //record stream
