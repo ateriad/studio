@@ -76,9 +76,9 @@
                                                 <label for="file">فایل</label><br>
                                             </div>
                                             <div>
-                                                <div class="mt-2 col-span-12" id="choose_input_file">
+                                                <div class="mt-2" id="choose_input_file">
                                                     <div id="dropzone" style="min-height: unset; padding: 2px 4px;"
-                                                         class="needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
+                                                         class="custom-dropzone needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
                                                          data-action="{{ route('upload.temp') }}">
                                                         <div class="dz-message">
                                                             <div><i class="fas fa-plus"></i></div>
@@ -132,13 +132,18 @@
                                             <div>
                                                 <label for="background_image"
                                                        class="d-block mb-2">تصویر زمینه</label>
-                                                <input type="file"
-                                                       class="input w-full border flex-1"
-                                                       id="background_image" name="background_image"
-                                                       placeholder="تصویر زمینه">
+                                                <div id="background_dropzone" style="min-height: unset; padding: 2px 4px;"
+                                                     class="custom-dropzone needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
+                                                     data-action="{{ route('upload.temp') }}">
+                                                    <div class="dz-message">
+                                                        <div><i class="fas fa-plus"></i></div>
+                                                        <div>انتخاب کنید</div>
+                                                    </div>
+                                                </div>
 
                                                 <a id="back_to_asset_cat" class="my-4" style="display: none">
-                                                    <i class="fad fa-arrow-circle-left float-right" style="font-size: 1.3rem; color: #d53f8c"></i>
+                                                    <i class="fad fa-arrow-circle-left float-right"
+                                                       style="font-size: 1.3rem; color: #d53f8c"></i>
                                                 </a>
 
                                                 <div id="asset_categories" class="mt-4">

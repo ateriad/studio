@@ -106,6 +106,38 @@ let myDropzone = new Dropzone("#dropzone", {
     }
 });
 
+let bgDropzone = new Dropzone("#background_dropzone", {
+    url: $('#background_dropzone').data('action'),
+    method: 'post',
+    headers: {
+        'X-CSRF-Token': $('meta[name=csrf-token]').attr('content')
+    },
+    paramName: "file",
+    maxFiles: 1,
+    acceptedFiles: 'image/*,video/*',
+    thumbnailMethod: 'crop',
+    addRemoveLinks: true,
+    dictRemoveFile: '✘',
+    init: function () {
+        this.on("removedfile", function (file) {
+            $('#image').val('');
+        });
+
+        this.on("success", function (file, responseText) {
+            let src = window.location.origin + '/storage/' + responseText.path;
+
+            if (file.type.includes("image")) {
+                bg = loadImage(src);
+            }
+        });
+
+        this.on("maxfilesexceeded", function (file) {
+            this.removeAllFiles();
+            this.addFile(file);
+        });
+    }
+});
+
 
 // canvas scripts
 let screenColorElem = document.getElementById("screen_color");
@@ -322,24 +354,6 @@ function draw() {
         image(video, rightOffset.value, topOffset.value, canvasParent.offsetWidth - rightOffset.value - leftOffset.value, canvasParent.offsetHeight - topOffset.value - bottomOffset.value);
     }
 }
-
-// set background
-document.getElementById('background_image').addEventListener("change", function (e) {
-    let file = e.target.files[0];
-    let type = file.type;
-
-    var reader = new FileReader();
-    reader.onload = function (f) {
-        var buffer = f.target.result;
-        if (type.includes("image")) {
-            bg = loadImage(buffer);
-        }
-    };
-
-    if (type.includes("image")) {
-        reader.readAsDataURL(file);
-    }
-});
 
 function setAsset(url) {
     console.log(url, 'url')

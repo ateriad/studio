@@ -65,7 +65,7 @@
                                 <label for="image"
                                        class="d-block mb-2">{{ trans('validation.attributes.image') }}</label>
                                 <div id="dropzone"
-                                     class="needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
+                                     class="custom-dropzone needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
                                      data-action="{{ route('upload.temp') }}">
                                     <div class="dz-message">
                                         <div><i class="fas fa-plus"></i></div>
