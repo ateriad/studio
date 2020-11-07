@@ -103,9 +103,10 @@ let myDropzone = new Dropzone("#dropzone", {
             startStreamBtn.removeAttr('disabled');
 
             inputVideoSrc = window.location.origin + '/storage/' + responseText.path;
-            video = createVideo([inputVideoSrc]);
+            video = createVideo(inputVideoSrc);
             video.loop();
-            // video.volume(0);
+            video.id('file_input_video');
+            video.volume(0);
             video.hide();
             k = 0;
         });
@@ -398,18 +399,26 @@ function setAsset(url) {
 
 //record stream
 async function getMediaStream() {
-    console.log(useCapture, capture, useFile, video, 111111111111)
+    let audioStream = mediaStream;
 
     let canvas = document.querySelector('canvas');
-    if ('captureStream' in canvas) {
-        mediaStream = canvas.captureStream();
-    } else if ('mozCaptureStream' in canvas) {
-        mediaStream = canvas.mozCaptureStream();
-    } else if (!self.disableLogs) {
-        console.error('Upgrade to latest Chrome or otherwise enable this flag: chrome://flags/#enable-experimental-web-platform-features');
-    }
+    mediaStream = canvas.captureStream();
 
-    const audioStream = await navigator.mediaDevices.getUserMedia({audio: true});
+    if (useCapture === true) {
+        audioStream = await navigator.mediaDevices.getUserMedia({audio: true});
+    } else if (useFile === true) {
+        let inputVideo = document.getElementById('file_input_video')
+        if (inputVideo.captureStream) {
+            audioStream = inputVideo.captureStream();
+        } else if (inputVideo.mozCaptureStream) {
+            audioStream = inputVideo.mozCaptureStream();
+        } else {
+            console.error('Stream capture is not supported');
+            audioStream = null;
+        }
+    } else {
+        console.error('nothing to stream');
+    }
 
     mediaStream.addTrack(audioStream.getTracks()[0])
 
