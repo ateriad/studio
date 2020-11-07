@@ -103,6 +103,12 @@ let canvasParent = document.getElementById('studio');
 let useFile = true, useCapture = false, capture = null, inputVideoSrc = null, video = null;
 let k = 0;
 
+let topOffset = document.getElementById('top_offset');
+let rightOffset = document.getElementById('right_offset');
+let leftOffset = document.getElementById('left_offset');
+let bottomOffset = document.getElementById('bottom_offset');
+
+
 let screenRedRangeElem = $("#screen_red_range");
 let screenGreenRangeElem = $("#screen_green_range");
 let screenBlueRangeElem = $("#screen_blue_range");
@@ -278,7 +284,7 @@ function draw() {
         }
         capture.updatePixels();
 
-        image(capture, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
+        image(capture, rightOffset.value, topOffset.value, canvasParent.offsetWidth - rightOffset.value - leftOffset.value, canvasParent.offsetHeight - topOffset.value - bottomOffset.value);
     }
 
     if (useFile && video != null) {
@@ -303,7 +309,7 @@ function draw() {
         }
         video.updatePixels();
 
-        image(video, 10, 10, canvasParent.offsetWidth - 20, canvasParent.offsetHeight - 10);
+        image(video, rightOffset.value, topOffset.value, canvasParent.offsetWidth - rightOffset.value - leftOffset.value, canvasParent.offsetHeight - topOffset.value - bottomOffset.value);
     }
 }
 

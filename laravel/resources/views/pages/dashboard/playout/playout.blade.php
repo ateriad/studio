@@ -87,6 +87,26 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="mt-4">
+                                                <label for="top_offset">بالا</label>
+                                                <input type="number" id="top_offset" class="input w-full border mt-2"
+                                                       value="10" min="0">
+                                            </div>
+                                            <div class="mt-2">
+                                                <label for="right_offset">راست</label>
+                                                <input type="number" id="right_offset" class="input w-full border mt-2"
+                                                       value="0" min="0">
+                                            </div>
+                                            <div class="mt-2">
+                                                <label for="left_offset">چپ</label>
+                                                <input type="number" id="left_offset" class="input w-full border mt-2"
+                                                       value="0" min="0">
+                                            </div>
+                                            <div class="mt-2">
+                                                <label for="bottom_offset">پایین</label>
+                                                <input type="number" id="bottom_offset" class="input w-full border mt-2"
+                                                       value="0" min="0">
+                                            </div>
                                         </div>
                                         <div class="hidden" id="tab-screen">
                                             <div>
@@ -207,6 +227,6 @@
         let authToken = 'token';
     </script>
 
-    <script type="text/javascript" src="{{ m(asset('dashboard_assets/js/pages/studio/studio.js')) }}"></script>
+    <script type="text/javascript" src="{{ m(asset('dashboard_assets/js/pages/studio/playout.js')) }}"></script>
 @endsection
 
