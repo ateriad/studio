@@ -135,10 +135,12 @@
                         this.removeFile(this.files[0]);
                     }
 
+                    let videosExt = ['mp4', 'avi', 'flv', 'mov', 'wmv']
                     let ext = file.name.split('.').pop();
-
                     if (ext === "blend") {
                         $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/blend.png");
+                    } else if (videosExt.includes(ext) === true) {
+                        $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/video.png");
                     }
                 });
 

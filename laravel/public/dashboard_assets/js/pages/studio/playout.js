@@ -85,6 +85,16 @@ let myDropzone = new Dropzone("#dropzone", {
     addRemoveLinks: true,
     dictRemoveFile: '✘',
     init: function () {
+        this.on('addedfile', function (file) {
+            let videosExt = ['mp4', 'avi', 'flv', 'mov', 'wmv']
+            let ext = file.name.split('.').pop();
+            if (ext === "blend") {
+                $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/blend.png");
+            } else if (videosExt.includes(ext) === true) {
+                $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/video.png");
+            }
+        });
+
         this.on("removedfile", function (file) {
             $('#image').val('');
         });
@@ -121,6 +131,16 @@ let bgDropzone = new Dropzone("#background_dropzone", {
     addRemoveLinks: true,
     dictRemoveFile: '✘',
     init: function () {
+        this.on('addedfile', function (file) {
+            let videosExt = ['mp4', 'avi', 'flv', 'mov', 'wmv']
+            let ext = file.name.split('.').pop();
+            if (ext === "blend") {
+                $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/blend.png");
+            } else if (videosExt.includes(ext) === true) {
+                $(file.previewElement).find(".dz-image img").attr("src", window.location.origin + "/dashboard_assets/images/extensions/video.png");
+            }
+        });
+
         this.on("removedfile", function (file) {
             $('#image').val('');
         });
