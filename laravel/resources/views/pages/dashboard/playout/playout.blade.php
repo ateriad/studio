@@ -204,7 +204,7 @@
                                             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                                                 <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-pink-600 bg-white"
                                                    onclick="changeActiveTab(event,'tab-screen')">
-                                                    <i class="fas fa-video text-base mr-1"></i> تنظیمات پرده
+                                                    <i class="fas fa-eye-dropper text-base mr-1"></i> تنظیمات پرده
                                                 </a>
                                             </li>
                                             <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
