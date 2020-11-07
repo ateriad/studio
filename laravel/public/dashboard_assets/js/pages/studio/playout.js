@@ -1,6 +1,8 @@
 // page scripts
 function changeActiveTab(event, tabID) {
     document.getElementById('asset_categories').style.display = "block";
+    document.getElementById('back_to_asset_cat').style.display = "none";
+
     let ele = document.getElementsByClassName('asset');
     for (let i = 0; i < ele.length; i++) {
         ele[i].style.display = "none";
@@ -32,7 +34,15 @@ function changeActiveTab(event, tabID) {
 function showAssets(categoryId) {
     document.getElementById('asset_categories').style.display = "none";
     document.getElementById('asset_' + categoryId).style.display = "block";
+    document.getElementById('back_to_asset_cat').style.display = "block";
 }
+
+document.getElementById('back_to_asset_cat').addEventListener("click", function (e) {
+    document.getElementById('asset_categories').style.display = "block";
+    $('#assets .asset').hide();
+    document.getElementById('back_to_asset_cat').style.display = "none";
+});
+
 
 $('input[type=radio][name=input_type]').change(function () {
     startStreamBtn.removeAttr('disabled');

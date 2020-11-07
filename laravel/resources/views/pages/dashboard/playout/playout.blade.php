@@ -137,7 +137,11 @@
                                                        id="background_image" name="background_image"
                                                        placeholder="تصویر زمینه">
 
-                                                <div id="asset_categories">
+                                                <a id="back_to_asset_cat" class="my-4" style="display: none">
+                                                    <i class="fad fa-arrow-circle-left float-right" style="font-size: 1.3rem; color: #d53f8c"></i>
+                                                </a>
+
+                                                <div id="asset_categories" class="mt-4">
                                                     @foreach($assetCategories as $category)
                                                         <a onclick="showAssets({{ $category->id }})"
                                                            class="category d-block mt-2">
