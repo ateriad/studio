@@ -7,12 +7,12 @@ const fs = require('fs');
 const axios = require('axios');
 
 const app = express();
-const index = http.createServer(app).listen(3000, () => {
+const server = http.createServer(app).listen(3000, () => {
     console.log('Listening...');
 });
 
 const wss = new WebSocketServer({
-    server: index
+    server: server
 });
 
 
@@ -38,6 +38,7 @@ wss.on('connection', (ws, req) => {
         }
     }).then(function (response) {
         const fileName = response.data['file']
+        const ext = fileName.split('.').pop();
         const path =  '/app/laravel/storage/app/public/' + fileName
         const dir = path.replace(/[^\/]*$/, '');
 
