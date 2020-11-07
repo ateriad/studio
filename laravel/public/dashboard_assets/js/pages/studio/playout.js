@@ -108,6 +108,9 @@ let myDropzone = new Dropzone("#dropzone", {
             video.id('file_input_video');
             video.volume(0);
             video.hide();
+
+            // $('#video_control').show();
+
             k = 0;
         });
 

@@ -87,6 +87,20 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div id="video_control" class="text-center  border p-2 mt-3"
+                                                 style="display: none">
+                                                <a href="javascript:void(0);" id="pause_video">
+                                                    <i class="fad fa-pause-circle fa-2x"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" id="play_video">
+                                                    <i class="fad fa-play-circle fa-2x"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" id="stop_video">
+                                                    <i class="fad fa-stop-circle fa-2x"></i>
+                                                </a>
+                                            </div>
+
                                             <div class="mt-4">
                                                 <label for="top_offset">بالا</label>
                                                 <input type="number" id="top_offset" class="input w-full border mt-2"
@@ -132,7 +146,8 @@
                                             <div>
                                                 <label for="background_image"
                                                        class="d-block mb-2">تصویر زمینه</label>
-                                                <div id="background_dropzone" style="min-height: unset; padding: 2px 4px;"
+                                                <div id="background_dropzone"
+                                                     style="min-height: unset; padding: 2px 4px;"
                                                      class="custom-dropzone needsclick border-gray-200 border-dashed dz-clickable .border-gray-200"
                                                      data-action="{{ route('upload.temp') }}">
                                                     <div class="dz-message">
