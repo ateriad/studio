@@ -59,6 +59,7 @@ $('input[type=radio][name=input_type]').change(function () {
         capture.hide();
         k = 0;
 
+        $('#video_control').hide();
 
     } else if (this.value === 'file') {
         $('#choose_input_file').removeClass('hidden');
@@ -67,6 +68,10 @@ $('input[type=radio][name=input_type]').change(function () {
 
         capture = null;
         k = 0;
+
+        if(video !== null) {
+            $('#video_control').show();
+        }
     }
 });
 
@@ -109,7 +114,7 @@ let myDropzone = new Dropzone("#dropzone", {
             video.volume(0);
             video.hide();
 
-            // $('#video_control').show();
+            $('#video_control').show();
 
             k = 0;
         });
@@ -119,6 +124,16 @@ let myDropzone = new Dropzone("#dropzone", {
             this.addFile(file);
         });
     }
+});
+
+document.getElementById('pause_video').addEventListener("click", function (e) {
+    video.pause();
+});
+document.getElementById('play_video').addEventListener("click", function (e) {
+    video.play();
+});
+document.getElementById('stop_video').addEventListener("click", function (e) {
+    video.stop();
 });
 
 let bgDropzone = new Dropzone("#background_dropzone", {
