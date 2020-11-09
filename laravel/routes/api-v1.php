@@ -21,7 +21,8 @@ Route::group(['middleware' => 'auth.api'], function () {
         Route::get('/', 'Asset\AssetController@index');
     });
 
-    Route::get('/stream/create', 'Stream\StreamController@create');
+    Route::post('/stream/start', 'Stream\StreamController@start');
+    Route::post('/stream/finish/{stream}', 'Stream\StreamController@finish');
 });
 
 

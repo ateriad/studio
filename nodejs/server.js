@@ -32,14 +32,19 @@ wss.on('connection', (ws, req) => {
     }
     const userToken = match[1];
 
-    axios.get('http://nginx/api/v1/stream/create', {
-        headers: {
-            Authorization: 'Bearer ' + userToken,
+    axios.post('http://nginx/api/v1/stream/start',
+        {},
+        {
+            headers: {
+                Authorization: 'Bearer ' + userToken,
+            }
         }
-    }).then(function (response) {
+    ).then(function (response) {
+        const streamId = response.data['id']
         const fileName = response.data['file']
         const ext = fileName.split('.').pop();
-        const path =  '/app/laravel/storage/app/public/' + fileName
+        const path = '/app/laravel/storage/app/public/' + fileName;
+        const flvPath = path.replace(ext, "flv");
         const dir = path.replace(/[^\/]*$/, '');
 
         if (!fs.existsSync(dir)) {
@@ -49,11 +54,13 @@ wss.on('connection', (ws, req) => {
         }
 
         const ffmpeg = child_process.spawn('ffmpeg', [
-            '-i', '-', '-c:v', 'libx264', '-preset', 'slow', '-f', 'flv', path
+            '-i', '-', '-c:v', 'libx264', '-preset', 'slow', '-f', 'flv', flvPath
         ]);
 
         ffmpeg.on('close', (code, signal) => {
-            ws.terminate();
+            streamEnded(userToken, streamId, flvPath, path).then(function () {
+                ws.terminate();
+            });
         });
 
         ffmpeg.stdin.on('error', (e) => {
@@ -76,3 +83,38 @@ wss.on('connection', (ws, req) => {
         ws.terminate();
     })
 });
+
+async function streamEnded(userToken, streamId, flvPath, path) {
+    await convert(flvPath, path);
+    await sendFinishStatus(userToken, streamId);
+}
+
+async function convert(flvPath, path) {
+    child_process.exec("ffmpeg -i " + flvPath + " -c:v libx265 " + path,
+        (error, stdout, stderr) => {
+            if (error) {
+                return;
+            }
+            if (stderr) {
+                return;
+            }
+        }
+    );
+}
+
+async function sendFinishStatus(userToken, streamId) {
+    axios.post('http://nginx/api/v1/stream/finish/' + streamId,
+        {
+            'status': 3
+        },
+        {
+            headers: {
+                Authorization: 'Bearer ' + userToken,
+            }
+        }
+    ).then(function (response) {
+        console.log('success');
+    }).catch(function (error) {
+        console.log(error);
+    })
+}

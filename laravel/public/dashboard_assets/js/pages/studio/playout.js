@@ -411,6 +411,7 @@ function draw() {
 }
 
 function setAsset(url) {
+    backgroundVideo = null;
     console.log(url, 'url')
     backgroundImage = loadImage(url);
 }

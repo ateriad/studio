@@ -16,14 +16,27 @@ class StreamController extends Controller
      *
      * @return JsonResponse
      */
-    public function create()
+    public function start()
     {
         $user = Auth::user();
 
         $stream = Stream::create([
             'user_id' => $user->id,
-            'file' => "streams/$user->id/" . time() . Str::random(30) . ".flv",
+            'file' => "streams/$user->id/" . time() . Str::random(30) . ".mp4",
             'status' => StreamStatus::Start,
+        ]);
+
+        return new JsonResponse($stream);
+    }
+
+    /**
+     * @param Stream $stream
+     * @return JsonResponse
+     */
+    public function finish(Stream $stream)
+    {
+        $stream->update([
+            'status' => StreamStatus::Successful,
         ]);
 
         return new JsonResponse($stream);
