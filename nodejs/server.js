@@ -87,6 +87,7 @@ wss.on('connection', (ws, req) => {
 async function streamEnded(userToken, streamId, flvPath, path) {
     await convert(flvPath, path);
     await sendFinishStatus(userToken, streamId);
+    await createThumb(flvPath);
 }
 
 async function convert(flvPath, path) {
@@ -117,4 +118,18 @@ async function sendFinishStatus(userToken, streamId) {
     }).catch(function (error) {
         console.log(error);
     })
+}
+
+async function createThumb(path) {
+    let pngPath = path.replace('flv', "png")
+    child_process.exec("ffmpeg -i " + path + " -ss 00:00:01.000 -vframes 1 " + pngPath,
+        (error, stdout, stderr) => {
+            if (error) {
+                return;
+            }
+            if (stderr) {
+                return;
+            }
+        }
+    );
 }
