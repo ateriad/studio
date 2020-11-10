@@ -19,10 +19,12 @@ class StreamController extends Controller
     public function start()
     {
         $user = Auth::user();
+        $lastId = Stream::select('id')->latest()->first()->id ?? 0;
+        $id = $lastId + 1;
 
         $stream = Stream::create([
             'user_id' => $user->id,
-            'file' => "streams/$user->id/" . time() . Str::random(30) . ".mp4",
+            'file' => "streams/$user->id/$id/" . time() . Str::random(25) . ".mp4",
             'status' => StreamStatus::Start,
         ]);
 

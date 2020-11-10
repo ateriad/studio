@@ -40,15 +40,16 @@ wss.on('connection', (ws, req) => {
             }
         }
     ).then(function (response) {
-        const streamId = response.data['id']
-        const fileName = response.data['file']
-        const ext = fileName.split('.').pop();
-        const path = '/app/laravel/storage/app/public/' + fileName;
-        const flvPath = path.replace(ext, "flv");
-        const dir = path.replace(/[^\/]*$/, '');
+        let streamId = response.data['id']
+        let fileName = response.data['file']
+        let ext = fileName.split('.').pop();
+        let path = '/app/laravel/storage/app/public/' + fileName;
+        let flvPath = path.replace(ext, "flv");
+        let dir = path.replace(/[^\/]*$/, '');
 
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, {
+
+        if (!fs.existsSync(dir + 'thumbs/')) {
+            fs.mkdirSync(dir + 'thumbs/', {
                 recursive: true
             });
         }
@@ -58,9 +59,7 @@ wss.on('connection', (ws, req) => {
         ]);
 
         ffmpeg.on('close', (code, signal) => {
-            streamEnded(userToken, streamId, flvPath, path).then(function () {
-                ws.terminate();
-            });
+            ws.terminate();
         });
 
         ffmpeg.stdin.on('error', (e) => {
@@ -76,6 +75,10 @@ wss.on('connection', (ws, req) => {
 
         ws.on('close', (e) => {
             ffmpeg.kill('SIGINT');
+
+            streamEnded(userToken, streamId, flvPath, path).then(function () {
+                console.log('finished')
+            });
         });
 
     }).catch(function (error) {
@@ -85,8 +88,8 @@ wss.on('connection', (ws, req) => {
 });
 
 async function streamEnded(userToken, streamId, flvPath, path) {
-    await convert(flvPath, path);
     await sendFinishStatus(userToken, streamId);
+    await convert(flvPath, path);
     await createThumb(flvPath);
 }
 
@@ -121,15 +124,12 @@ async function sendFinishStatus(userToken, streamId) {
 }
 
 async function createThumb(path) {
-    let pngPath = path.replace('flv', "png")
-    child_process.exec("ffmpeg -i " + path + " -ss 00:00:01.000 -vframes 1 " + pngPath,
+    let dir = path.replace(/[^\/]*$/, '');
+    let pngPath = path.replace(dir, dir + 'thumbs/').replace('flv', "png");
+
+    child_process.exec("ffmpeg -i " + path + " -ss 00:00:02.000 -vframes 1 " + pngPath,
         (error, stdout, stderr) => {
-            if (error) {
-                return;
-            }
-            if (stderr) {
-                return;
-            }
+            console.log(stderr);
         }
     );
 }

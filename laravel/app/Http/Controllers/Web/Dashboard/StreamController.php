@@ -62,7 +62,7 @@ class StreamController extends Controller
             if ($user->isAdmin()) {
                 $obj->user_name = $stream->user->full_name;
             }
-            $obj->thumbnail = asset('images/test.jpg');
+            $obj->thumbnail = $stream->thumb;
             $obj->path = public_storage_path($stream->file);
             $obj->updated_at = jDate($stream->updated_at);
             $obj->created_at = jDate($stream->created_at);

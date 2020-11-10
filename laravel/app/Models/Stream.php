@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Stream
@@ -33,6 +34,25 @@ class Stream extends Model
     use HasFactory;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public $appends = ['thumb'];
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getThumbAttribute()
+    {
+        $name = basename($this->file);
+        $thumb = str_replace($name, "thumbs/$name", $this->file);
+        $thumb = str_replace('.mp4', '.png', $thumb);
+
+        if (Storage::exists($thumb)) {
+            return public_storage_path($thumb);
+        }
+
+        return asset('images/test.jpg');
+    }
 
     /**
      * @return BelongsTo
