@@ -94,7 +94,7 @@ async function streamEnded(userToken, streamId, flvPath, path) {
 }
 
 async function convert(flvPath, path) {
-    child_process.exec("ffmpeg -i " + flvPath + " -c:v libx265 " + path,
+    child_process.exec("ffmpeg -i " + flvPath + " -c:v libx264 " + path,
         (error, stdout, stderr) => {
             if (error) {
                 return;

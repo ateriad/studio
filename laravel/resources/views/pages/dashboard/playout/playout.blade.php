@@ -57,7 +57,6 @@
                                 دانلود
                             </button>
                         </div>
-                        <video id="recorded" playsinline loop></video>
                     </div>
                 </div>
             </div>

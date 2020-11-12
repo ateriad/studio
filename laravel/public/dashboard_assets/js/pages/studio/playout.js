@@ -69,7 +69,7 @@ $('input[type=radio][name=input_type]').change(function () {
         capture = null;
         k = 0;
 
-        if(video !== null) {
+        if (video !== null) {
             $('#video_control').show();
         }
     }
@@ -468,22 +468,26 @@ startStreamButton.addEventListener('click', async () => {
         });
 
         mediaRecorder.addEventListener('dataavailable', (e) => {
-            console.log(ws.readyState, WebSocket.OPEN, 333333)
+            console.log(ws.readyState, 'dataavailable', e.data.size)
+
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(e.data);
             }
         });
 
         mediaRecorder.addEventListener('stop', (e) => {
-            if (ws != null) {
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.close.bind(ws);
-                }
-            }
+            console.log('stop', 1111111);
+
+            const sleep = (milliseconds) => {
+                return new Promise(resolve => setTimeout(resolve, milliseconds))
+            };
+            sleep(4000).then(() => {
+                ws.close();
+            });
         });
         mediaRecorder.start(4000);
 
-        console.log(mediaRecorder.state, ' 11111.log(mediaRecorder.state);11111');
+        console.log(mediaRecorder.state, ' mediaRecorder.state ');
 
         mediaRecorder.onstop = function (e) {
             console.log("data available after MediaRecorder.stop() called.");
@@ -491,29 +495,25 @@ startStreamButton.addEventListener('click', async () => {
     });
 
     ws.addEventListener('close', (e) => {
-        if (mediaRecorder != null)
+        if (mediaRecorder != null && MediaRecorder.state === 'recording') {
             mediaRecorder.stop();
-        const sleep = (milliseconds) => {
-            return new Promise(resolve => setTimeout(resolve, milliseconds))
-        };
-        sleep(2000).then(() => {
-            Swal.fire({
-                type: 'warning',
-                text: 'ضبط متوقف شد',
-                confirmButtonText: 'باشه',
-                confirmButtonColor: "#fcb900"
-            }).then((result) => {
-                if (result.value) {
-                    $('#start_stream').show();
-                    $('#stop_stream').hide();
-                    $('#publish_loading').hide();
-                }
-            });
+        }
 
-            stopStreamBtn.hide();
-            startStreamBtn.show();
+        Swal.fire({
+            type: 'warning',
+            text: 'ضبط متوقف شد',
+            confirmButtonText: 'باشه',
+            confirmButtonColor: "#fcb900"
+        }).then((result) => {
+            if (result.value) {
+                $('#start_stream').show();
+                $('#stop_stream').hide();
+                $('#publish_loading').hide();
+            }
         });
 
+        stopStreamBtn.hide();
+        startStreamBtn.show();
     });
 
     window.onbeforeunload = function () {
@@ -525,7 +525,12 @@ startStreamButton.addEventListener('click', async () => {
     stopStreamBtn.on('click', (e) => {
         Swal.fire('صبر کنید . . .');
         Swal.showLoading();
-        ws.close();
+
+        console.log(mediaRecorder.state, ' 11111 mediaRecorder.state ');
+
+        if (MediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+        }
     });
 
     stopStreamBtn.show();
