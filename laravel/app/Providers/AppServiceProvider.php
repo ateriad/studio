@@ -9,6 +9,7 @@ use App\Services\SMS\SMS;
 use App\Services\Token\Jwt as TokenJwt;
 use App\Services\Token\Token;
 use Exception;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -57,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (App::environment('production')) {
+            URL::forceRootUrl(config('app.url'));
+        }
+
         if (Str::startsWith(config('app.url'), 'https')) {
             URL::forceScheme('https');
         }
