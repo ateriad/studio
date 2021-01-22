@@ -16,7 +16,14 @@ class Candoo implements SMS
 
     public function __construct()
     {
-        $this->client = new SoapClient(config('sms.drivers.candoo.wdsl'));
+        $context = stream_context_create(['http' => ['user_agent' => 'PHPSoapClient']]);
+
+        $soapClientOptions = array(
+            'stream_context' => $context,
+            'cache_wsdl' => WSDL_CACHE_NONE
+        );
+
+        $this->client = new SoapClient(config('sms.drivers.candoo.wdsl'), $soapClientOptions);
     }
 
     /**
