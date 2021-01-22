@@ -32,7 +32,7 @@ wss.on('connection', (ws, req) => {
     }
     const userToken = match[1];
 
-    axios.post('http://nginx/api/v1/stream/start',
+    axios.post('https://restudio.tv/api/v1/stream/start',
         {},
         {
             headers: {
@@ -107,7 +107,7 @@ async function convert(flvPath, path) {
 }
 
 async function sendFinishStatus(userToken, streamId) {
-    axios.post('http://nginx/api/v1/stream/finish/' + streamId,
+    axios.post('https://restudio.tv/api/v1/stream/finish/' + streamId,
         {
             'status': 3
         },

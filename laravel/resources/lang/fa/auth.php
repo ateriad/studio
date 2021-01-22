@@ -15,7 +15,7 @@ return [
 
     'failed' => 'شناسه یا گذرواژه شما نادرست می باشد.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'otp-sms' => "کد ورود به کنداکتور \nCode: :otp",
+    'otp-sms' => "کد ورود به رستادیو \nCode: :otp",
     'code_sent' => 'کد ورود برای شما پیامک شد.',
     'account_suspended' => 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید',
     'account_suspended_for_days' => '{1} حساب شما برای یک روز مسدود شده است لطفا با پشتیبانی تماس بگیرید|[2,*] حساب شما برای :day روز مسدود شده است لطفا با پشتیبانی تماس بگیرید',
