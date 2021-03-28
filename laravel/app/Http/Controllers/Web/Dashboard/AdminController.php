@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Enums\Permissions;
 use App\Http\Controllers\Controller;
+use App\Mail\EmailVerification;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserEmailReset;
+use App\Services\Utils\Random;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -13,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use stdClass;
 
 class AdminController extends Controller
@@ -81,10 +86,11 @@ class AdminController extends Controller
             abort(403);
         }
 
-        //
+        $roles = Role::all();
 
         return view('pages.dashboard.admins.edit', [
             'admin' => $admin,
+            'roles' => $roles,
         ]);
     }
 
@@ -101,10 +107,34 @@ class AdminController extends Controller
         }
 
         $request->validate([
-            'name' => ['required', 'unique:users,name,' . $admin->id],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email' => ['nullable', 'email', 'unique:users,email,' . $admin->id],
+            'cellphone' => ['required', 'cellphone', 'unique:users,cellphone,' . $admin->id],
+            'image' => 'nullable|mimes:jpeg,png,gif,svg|max:1024',
         ]);
 
-        //
+        $admin->first_name = $request->get('first_name');
+        $admin->last_name = $request->get('last_name');
+        $admin->cellphone = $request->get('cellphone');
+        $admin->cellphone_verified_at = null;
+
+        if ($admin->email != $request->get('email')) {
+            $email = UserEmailReset::updateOrCreate([
+                'user_id' => auth()->id()
+            ], [
+                'email' => $request->input('email'),
+                'token' => Random::alphabetic(32),
+            ]);
+
+            Mail::to($email->email)->send(new EmailVerification($admin, $email->token));
+        }
+
+        if ($request->file('image') != null) {
+            $admin->image = $request->file('image')->store('avatars/' . $user->id, 'public');
+        }
+
+        $admin->save();
 
         return redirect()->route('dashboard.admins.index')->with('success', trans('admins.updated'));
     }
