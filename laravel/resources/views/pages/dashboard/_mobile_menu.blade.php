@@ -81,6 +81,29 @@
         </a>
     </li>
 
+    @can('users-index|users-create')
+        <li>
+            <a href="javascript:void(0);" class="menu @yield('mobile_users')">
+                <div class="menu__icon"><i data-feather="list"></i></div>
+                <div class="menu__title">
+                    {{ trans_choice('pages/general.users', 1) }}
+                    <i data-feather="chevron-down" class="menu__sub-icon"></i>
+                </div>
+            </a>
+            <ul class="@yield('mobile_users_sub')">
+                @can('users-index')
+                    <li>
+                        <a href="{{ route('dashboard.users.index') }}"
+                           class="menu @yield('mobile_users_index')">
+                            <div class="menu__icon"><i data-feather="activity"></i></div>
+                            <div class="menu__title">{{ trans('pages/general.list') }}</div>
+                        </a>
+                    </li>
+                @endcan
+            </ul>
+        </li>
+    @endcan
+
     <li>
         <a href="{{ route('dashboard.settings') }}" class="menu @yield('mobile_settings')">
             <div class="menu__icon"><i data-feather="settings"></i></div>

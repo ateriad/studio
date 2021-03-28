@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -15,6 +15,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('pages.dashboard.dashboard');
+        $data = [];
+
+        if(auth()->user()->isAdmin()) {
+            $data['usersCount'] = User::doesntHave('roles')->count();
+        }
+
+        return view('pages.dashboard.dashboard', [
+            'data' => $data,
+        ]);
     }
 }

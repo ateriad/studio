@@ -63,7 +63,7 @@ class ProfileController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function updateImage(Request $request)
+    public function updateImage(Request $request): RedirectResponse
     {
         $request->validate([
             'image' => 'required|mimes:jpeg,png,gif,svg|max:1024',

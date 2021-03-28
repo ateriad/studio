@@ -70,7 +70,7 @@
                                 <div>
                                     <label for="first_name">{{ trans('validation.attributes.first_name') }}</label>
                                     <input type="text" id="first_name" name="first_name"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('first_name') border-theme-6 @enderror"
+                                           class="input w-full border bg-gray-100 mt-2 @error('first_name') border-theme-6 @enderror"
                                            value="{{ $user->first_name }}">
                                     @error('first_name')
                                     <div class="text-theme-6 mt-2">{{ $message }}</div>
@@ -79,7 +79,7 @@
                                 <div class="mt-2">
                                     <label for="last_name">{{ trans('validation.attributes.last_name') }}</label>
                                     <input type="text" id="last_name" name="last_name"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('last_name') border-theme-6 @enderror"
+                                           class="input w-full border bg-gray-100 mt-2 @error('last_name') border-theme-6 @enderror"
                                            value="{{ $user->last_name }}">
                                     @error('last_name')
                                     <div class="text-theme-6 mt-2">{{ $message }}</div>
@@ -88,7 +88,7 @@
                                 <div class="mt-2">
                                     <label for="email">{{ trans('validation.attributes.email') }}</label>
                                     <input type="text" id="email" name="email"
-                                           class="input w-full border bg-gray-100 cursor-not-allowed mt-2 @error('email') border-theme-6 @enderror"
+                                           class="input w-full border bg-gray-100 mt-2 @error('email') border-theme-6 @enderror"
                                            value="{{ $user->email }}">
                                     @error('email')
                                     <div class="text-theme-6 mt-2">{{ $message }}</div>

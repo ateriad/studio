@@ -79,7 +79,7 @@ class User extends Authenticatable
     /**
      * @return string
      */
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
         return isset($this->first_name) ? $this->first_name . ' ' . $this->last_name : $this->cellphone;
     }
@@ -88,7 +88,7 @@ class User extends Authenticatable
      * @param $value
      * @return string
      */
-    public function getImageAttribute($value)
+    public function getImageAttribute($value): string
     {
         return isset($value) ? public_storage_path($value) : asset('dashboard_assets/images/user.jpg');
     }
@@ -96,7 +96,7 @@ class User extends Authenticatable
     /**
      * @return BelongsToMany
      */
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -150,7 +150,7 @@ class User extends Authenticatable
     /**
      * @return HasOne
      */
-    public function userEmailReset()
+    public function userEmailReset(): HasOne
     {
         return $this->hasOne(UserEmailReset::class);
     }
