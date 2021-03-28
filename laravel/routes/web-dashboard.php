@@ -125,4 +125,27 @@ Route::group(['middleware' => 'auth.admin'], function () {
             'as' => 'users.destroy',
         ]);
     });
+
+    Route::group(['prefix' => '/admins'], function () {
+        Route::get('/', [
+            'uses' => 'AdminController@index',
+            'as' => 'admins.index',
+        ]);
+        Route::post('/datatable', [
+            'uses' => 'AdminController@datatable',
+            'as' => 'admins.datatable',
+        ]);
+        Route::get('/{admin}/edit', [
+            'uses' => 'AdminController@edit',
+            'as' => 'admins.edit',
+        ]);
+        Route::put('/{admin}', [
+            'uses' => 'AdminController@update',
+            'as' => 'admins.update',
+        ]);
+        Route::delete('/{admin}', [
+            'uses' => 'AdminController@destroy',
+            'as' => 'admins.destroy',
+        ]);
+    });
 });

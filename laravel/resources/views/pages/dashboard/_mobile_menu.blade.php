@@ -104,6 +104,29 @@
         </li>
     @endcan
 
+    @can('admins-index|admins-create')
+        <li>
+            <a href="javascript:void(0);" class="menu @yield('mobile_admins')">
+                <div class="menu__icon"><i data-feather="list"></i></div>
+                <div class="menu__title">
+                    {{ trans_choice('pages/general.admins', 1) }}
+                    <i data-feather="chevron-down" class="menu__sub-icon"></i>
+                </div>
+            </a>
+            <ul class="@yield('mobile_admins_sub')">
+                @can('admins-index')
+                    <li>
+                        <a href="{{ route('dashboard.admins.index') }}"
+                           class="menu @yield('mobile_admins_index')">
+                            <div class="menu__icon"><i data-feather="activity"></i></div>
+                            <div class="menu__title">{{ trans('pages/general.list') }}</div>
+                        </a>
+                    </li>
+                @endcan
+            </ul>
+        </li>
+    @endcan
+
     <li>
         <a href="{{ route('dashboard.settings') }}" class="menu @yield('mobile_settings')">
             <div class="menu__icon"><i data-feather="settings"></i></div>
