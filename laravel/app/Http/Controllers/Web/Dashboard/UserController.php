@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Web\Dashboard;
 
 use App\Enums\Permissions;
 use App\Http\Controllers\Controller;
+use App\Mail\EmailVerification;
 use App\Models\User;
+use App\Models\UserEmailReset;
+use App\Services\Utils\Random;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -13,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use stdClass;
 
 class UserController extends Controller
@@ -78,6 +82,65 @@ class UserController extends Controller
         ];
 
         return new JsonResponse($json_data);
+    }
+
+    /**
+     * @return Factory|View
+     */
+    public function create()
+    {
+        $user = Auth::user();
+        if ($user->cannot(Permissions::USERS_CREATE)) {
+            abort(403);
+        }
+
+        return view('pages.dashboard.users.create');
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $admin = Auth::user();
+        if ($admin->cannot(Permissions::USERS_CREATE)) {
+            abort(403);
+        }
+
+        $request->validate([
+            'first_name' => ['required', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email' => ['nullable', 'email', 'unique:users,email'],
+            'cellphone' => ['required', 'cellphone', 'unique:users,cellphone'],
+            'image' => 'nullable|mimes:jpeg,png,gif,svg|max:1024',
+        ]);
+
+        $user = new User();
+        $user->first_name = $request->get('first_name');
+        $user->last_name = $request->get('last_name');
+        $user->cellphone = $request->get('cellphone');
+        $user->cellphone_verified_at = null;
+        $user->save();
+
+        if ($user->email != null) {
+            $email = UserEmailReset::updateOrCreate([
+                'user_id' => auth()->id()
+            ], [
+                'email' => $request->input('email'),
+                'token' => Random::alphabetic(32),
+            ]);
+
+            Mail::to($email->email)->send(new EmailVerification($user, $email->token));
+        }
+
+        if ($request->file('image') != null) {
+            $user->image = $request->file('image')->store('avatars/' . $user->id, 'public');
+        }
+
+        $user->save();
+
+        return redirect()->route('dashboard.users.index')->with('success', trans('users.created'));
     }
 
     /**

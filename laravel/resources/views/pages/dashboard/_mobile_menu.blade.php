@@ -100,6 +100,15 @@
                         </a>
                     </li>
                 @endcan
+                @can('users-create')
+                    <li>
+                        <a href="{{ route('dashboard.users.create') }}"
+                           class="menu @yield('mobile_users_create')">
+                            <div class="menu__icon"><i data-feather="activity"></i></div>
+                            <div class="menu__title">{{ trans('pages/general.create') }}</div>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </li>
     @endcan

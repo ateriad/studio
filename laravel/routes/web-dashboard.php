@@ -112,6 +112,14 @@ Route::group(['middleware' => 'auth.admin'], function () {
             'uses' => 'UserController@datatable',
             'as' => 'users.datatable',
         ]);
+        Route::get('/create', [
+            'uses' => 'UserController@create',
+            'as' => 'users.create',
+        ]);
+        Route::post('/', [
+            'uses' => 'UserController@store',
+            'as' => 'users.store',
+        ]);
         Route::get('/{user}/edit', [
             'uses' => 'UserController@edit',
             'as' => 'users.edit',
@@ -134,6 +142,14 @@ Route::group(['middleware' => 'auth.admin'], function () {
         Route::post('/datatable', [
             'uses' => 'AdminController@datatable',
             'as' => 'admins.datatable',
+        ]);
+        Route::get('/create', [
+            'uses' => 'AdminController@create',
+            'as' => 'admins.create',
+        ]);
+        Route::post('/', [
+            'uses' => 'AdminController@store',
+            'as' => 'admins.store',
         ]);
         Route::get('/{admin}/edit', [
             'uses' => 'AdminController@edit',

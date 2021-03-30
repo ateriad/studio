@@ -31,6 +31,12 @@
         <h2 class="text-lg font-medium mr-auto">
             {{ trans('pages/dashboard/users.users_list') }}
         </h2>
+        <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
+            <a class="button text-white bg-theme-1 shadow-md mr-2"
+               href="{{ route('dashboard.users.create') }}">
+                {{ trans('pages/dashboard/users.users_create') }}
+            </a>
+        </div>
     </div>
 
     <div class="intro-y d-block mt-5">

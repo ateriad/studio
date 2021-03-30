@@ -26,6 +26,7 @@ return [
     'forget_password' => 'فراموشی گذرواژه',
     'sign_out' => 'خروج',
 
+    'select_a_file' => 'فایل را انتخاب کنید.',
     'click_to_upload_image' => 'برای بارگذاری تصویر اینجا کلیک کنید.',
     'click_to_upload_file' => 'برای بارگذاری فایل اینجا کلیک کنید.',
 

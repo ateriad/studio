@@ -102,6 +102,15 @@
                         </a>
                     </li>
                 @endcan
+                @can('users-create')
+                    <li>
+                        <a href="{{ route('dashboard.users.create') }}"
+                           class="side-menu @yield('side_users_create')">
+                            <div class="side-menu__icon"><i data-feather="activity"></i></div>
+                            <div class="side-menu__title">{{ trans('pages/general.create') }}</div>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </li>
     @endcan
