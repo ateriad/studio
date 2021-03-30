@@ -123,7 +123,7 @@ class UserController extends Controller
         $user->cellphone_verified_at = null;
         $user->save();
 
-        if ($user->email != null) {
+        if ($request->get('email') != null) {
             $email = UserEmailReset::updateOrCreate([
                 'user_id' => auth()->id()
             ], [
@@ -172,10 +172,34 @@ class UserController extends Controller
         }
 
         $request->validate([
-            'name' => ['required', 'unique:users,name,' . $user->id],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email' => ['nullable', 'email', 'unique:users,email,' . $user->id],
+            'cellphone' => ['required', 'cellphone', 'unique:users,cellphone,' . $user->id],
+            'image' => 'nullable|mimes:jpeg,png,gif,svg|max:1024',
         ]);
 
-        //todo
+        $user->first_name = $request->get('first_name');
+        $user->last_name = $request->get('last_name');
+        $user->cellphone = $request->get('cellphone');
+        $user->cellphone_verified_at = null;
+
+        if ($user->email != $request->get('email')) {
+            $email = UserEmailReset::updateOrCreate([
+                'user_id' => auth()->id()
+            ], [
+                'email' => $request->input('email'),
+                'token' => Random::alphabetic(32),
+            ]);
+
+            Mail::to($email->email)->send(new EmailVerification($user, $email->token));
+        }
+
+        if ($request->file('image') != null) {
+            $user->image = $request->file('image')->store('avatars/' . $user->id, 'public');
+        }
+
+        $user->save();
 
         return redirect()->route('dashboard.users.index')->with('success', trans('users.updated'));
     }
