@@ -7,7 +7,7 @@
 @section('mobile_admins_sub', 'menu__sub-open')
 @section('side_admins', 'side-menu--active')
 @section('side_admins_index', 'side-menu--active')
-@section('side_assets_sub', 'side-menu__sub-open')
+@section('side_admins_sub', 'side-menu__sub-open')
 
 @section('style')
     <link rel="stylesheet" href="{{ asset('vendor/dropzone-5.7.0/min/dropzone.min.css') }}">

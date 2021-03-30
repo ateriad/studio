@@ -75,6 +75,14 @@ class AdminController extends Controller
         return new JsonResponse($json_data);
     }
 
+    public function store(Request $request)
+    {
+        $user = User::findOrFail($request->input('id'));
+        $user->roles()->attach($request->input('role'));
+
+        return new JsonResponse(['message' => trans('admins.created')]);
+    }
+
     /**
      * @param User $admin
      * @return Factory|View
@@ -112,6 +120,7 @@ class AdminController extends Controller
             'email' => ['nullable', 'email', 'unique:users,email,' . $admin->id],
             'cellphone' => ['required', 'cellphone', 'unique:users,cellphone,' . $admin->id],
             'image' => 'nullable|mimes:jpeg,png,gif,svg|max:1024',
+            'roles.*' => 'exists:roles,id'
         ]);
 
         $admin->first_name = $request->get('first_name');
@@ -131,10 +140,14 @@ class AdminController extends Controller
         }
 
         if ($request->file('image') != null) {
-            $admin->image = $request->file('image')->store('avatars/' . $user->id, 'public');
+            $admin->image = $request->file('image')->store('avatars/' . $admin->id, 'public');
         }
 
         $admin->save();
+
+        if ($admin->id != 1) {
+            $admin->roles()->sync($request->input('roles'));
+        }
 
         return redirect()->route('dashboard.admins.index')->with('success', trans('admins.updated'));
     }
@@ -151,11 +164,11 @@ class AdminController extends Controller
             abort(403);
         }
 
-        if ($admin->hasRole(1)) {
+        if ($admin->id == 1) {
             return new JsonResponse(['message' => 'can not delete'], 403);
         }
 
-        $admin->delete();
+        $admin->roles()->detach();
 
         return new JsonResponse(['message' => trans('admins.deleted')]);
     }

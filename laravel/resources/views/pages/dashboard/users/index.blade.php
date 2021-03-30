@@ -51,7 +51,9 @@
     <script src="{{ asset('vendor/datatable/js/datatables.min.js') }}"></script>
     <script>
         let deleteUserUrl = '{{ route('dashboard.users.destroy', ['user' => 'userId']) }}';
+        let createAdminUrl = '{{ route('dashboard.admins.store') }}';
         let editUserUrl = '{{ route('dashboard.users.edit', ['user' => 'userId']) }}';
+        let roles = @json($roles)
     </script>
     <script>
         $(document).ready(function () {
@@ -95,6 +97,9 @@
                             '</a>\n' +
                             '<a href="javascript:void(0);" data-id="' + row.id + '" class="deleteUser flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md">' +
                             '   <i class="fad fa-trash w-4 h-4 mr-2"></i> حذف ' +
+                            '</a>\n' +
+                            '<a href="javascript:void(0);" data-id="' + row.id + '" class="createAdmin flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md">' +
+                            '   <i class="fad fa-trash w-4 h-4 mr-2"></i> افزودن به مدیران ' +
                             '</a>\n'
                     },
                     orderable: false,
@@ -169,6 +174,55 @@
                         });
                     }
                 })
+            })
+
+            $('body').on('click', '.createAdmin', function () {
+                let id = $(this).attr('data-id');
+                (async () => {
+                    const {value: role} = await Swal.fire({
+                        title: 'آیا کاربر به لیست مدیران افزوده شود؟',
+                        text: "",
+                        icon: 'warning',
+                        input: 'select',
+                        inputOptions: roles,
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'بله',
+                        cancelButtonText: 'خیر',
+                    }).then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                type: "POST",
+                                url: createAdminUrl,
+                                data: {
+                                    'id': id,
+                                    'role': result.value
+                                },
+                                success: function (response) {
+                                    successToastr(response['message'])
+                                    table.ajax.reload();
+                                },
+                                error: function (error) {
+                                    console.log(error)
+
+                                    switch (error.status) {
+                                        case 422:
+                                            // validation
+                                            $.each(error['responseJSON']['errors'], function (i, j) {
+                                                errorToastr(j[0])
+                                            })
+                                            break;
+                                        default:
+                                            // 500
+                                            errorToastr(error['responseJSON']['message'])
+                                            break;
+                                    }
+                                }
+                            });
+                        }
+                    })
+                })()
             })
         });
     </script>

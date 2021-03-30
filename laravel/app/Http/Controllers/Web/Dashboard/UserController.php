@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Dashboard;
 use App\Enums\Permissions;
 use App\Http\Controllers\Controller;
 use App\Mail\EmailVerification;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserEmailReset;
 use App\Services\Utils\Random;
@@ -31,7 +32,9 @@ class UserController extends Controller
             abort(403);
         }
 
-        return view('pages.dashboard.users.index');
+        return view('pages.dashboard.users.index', [
+            'roles' => Role::pluck('title', 'id')->toArray(),
+        ]);
     }
 
     /**

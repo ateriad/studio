@@ -143,10 +143,6 @@ Route::group(['middleware' => 'auth.admin'], function () {
             'uses' => 'AdminController@datatable',
             'as' => 'admins.datatable',
         ]);
-        Route::get('/create', [
-            'uses' => 'AdminController@create',
-            'as' => 'admins.create',
-        ]);
         Route::post('/', [
             'uses' => 'AdminController@store',
             'as' => 'admins.store',
