@@ -91,7 +91,7 @@ class StreamController extends Controller
     public function destroy(Stream $stream)
     {
         $user = Auth::user();
-        if ($stream->user_id != $user->id or $user->cannot(Permissions::STREAMS_DELETE)) {
+        if ($stream->user_id != $user->id and $user->cannot(Permissions::STREAMS_DELETE)) {
             abort(403);
         }
 

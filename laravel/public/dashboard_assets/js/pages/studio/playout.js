@@ -346,7 +346,7 @@ function setup() {
     backgroundImage = loadImage(defaultCanvasBg);
     myCanvas = createCanvas(450, 340);
     myCanvas.parent('canvas-container');
-    resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
+    resizeCanvas(Math.floor(canvasParent.offsetWidth / 2) * 2, Math.floor(canvasParent.offsetHeight / 2) * 2);
     noStroke();
     noFill();
 }
