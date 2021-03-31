@@ -528,7 +528,7 @@ startStreamButton.addEventListener('click', async () => {
 
         console.log(mediaRecorder.state, ' 11111 mediaRecorder.state ');
 
-        if (MediaRecorder.state === 'recording') {
+        if (mediaRecorder.state === 'recording') {
             mediaRecorder.stop();
         }
     });
